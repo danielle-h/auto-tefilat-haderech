@@ -1,3 +1,4 @@
+import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:tefilat_haderech/prayer_type.dart';
@@ -69,7 +70,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tefilat Haderech'),
+        title: Text('תפילת הדרך-אשכנז'),
       ),
       body: Column(
         children: <Widget>[
@@ -100,6 +101,33 @@ class _HomePageState extends State<HomePage> {
                 isPlaying ? stop() : readAloud();
               },
               child: isPlaying ? Text("לעצור") : Text('לקרא בקול רם'),
+              // style: ButtonStyle(
+              //   backgroundColor: MaterialStateProperty.all(
+              //       AppTheme.lightTheme().primaryColor),
+              //   foregroundColor: MaterialStateProperty.all(Colors.white),
+              // ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(16),
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () async {
+                final alarmSettings = AlarmSettings(
+                  id: 42,
+                  dateTime: DateTime.now().add(Duration(minutes: 30)),
+                  assetAudioPath: 'assets/sounds/ashkenaz.mp3',
+                  loopAudio: false,
+                  vibrate: false,
+                  volumeMax: true,
+                  fadeDuration: 0,
+                  notificationTitle: 'תפילת דרך אוטומטית',
+                  notificationBody: 'אומר עכשיו',
+                  enableNotificationOnKill: true,
+                );
+                await Alarm.set(alarmSettings: alarmSettings);
+              },
+              child: Text('לקרא עוד מעט'),
               // style: ButtonStyle(
               //   backgroundColor: MaterialStateProperty.all(
               //       AppTheme.lightTheme().primaryColor),
