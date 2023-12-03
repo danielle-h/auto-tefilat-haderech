@@ -1,8 +1,12 @@
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:tefilat_haderech/prayer_type.dart';
+import 'package:tefilat_haderech/alarm_params_page.dart';
+import 'package:tefilat_haderech/prayer_parameters.dart';
+import 'package:tefilat_haderech/prayer_version_selection.dart';
 import 'package:tefilat_haderech/styles.dart';
+
+import 'constants.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key, required this.prayerType});
@@ -15,6 +19,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final player = AudioPlayer();
   bool isPlaying = false;
+  bool returnToday = true;
 
   @override
   void initState() {
@@ -23,7 +28,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> initPlayer() async {
-    await player.setAsset("assets/sounds/ashkenaz.mp3");
+    await player.setAsset("assets/sounds/ashkenaz-female-notReturnToday.mp3");
     print("loop mode: ${player.loopMode}");
     player.playerStateStream.listen((playerState) {
       print("playerstate: ${playerState.processingState}");
@@ -36,8 +41,11 @@ class _HomePageState extends State<HomePage> {
     //player.set
   }
 
-  final String ashkenaz =
+  final String ashkenaz_returnToday =
       "יְהִי רָצוֹן מִלְפָנֶיךָ יי אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ, שֶׁתּוֹלִיכֵנוּ לְשָׁלוֹם וְתַצְעִידֵנוּ לְשָׁלוֹם וְתַדְרִיכֵנוּ לְשָׁלוֹם, וְתִסְמְכֵנוּ לְשָׁלוֹם, וְתַגִּיעֵנוּ לִמְחוֹז חֶפְצֵנוּ לְחַיִּים וּלְשִׂמְחָה וּלְשָׁלוֹם וְתַחְזִירֵנוּ לְשָׁלוֹם וְתַצִּילֵנוּ מִכַּף כָּל אוֹיֵב וְאוֹרֵב וְלִסְטִים וְחַיּוֹת רָעוֹת בַּדֶּרֶךְ, וּמִכָּל מִינֵי פֻּרְעָנֻיּוֹת הַמִּתְרַגְּשׁוֹת לָבוֹא לָעוֹלָם, וְתִתְּנֵנוּ לְחֵן וּלְחֶסֶד וּלְרַחֲמִים בְּעֵינֶיךָ וּבְעֵינֵי כָל רֹאֵינוּ, כִּי אל שׁוֹמֵעַ תְּפִלָּה וְתַחֲנוּן אַתָּה. בָּרוּךְ אַתָּה יי שׁוֹמֵעַ תְּפִלָּה";
+
+  final String ashkenaz_notReturnToday =
+      "יְהִי רָצוֹן מִלְפָנֶיךָ יי אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ, שֶׁתּוֹלִיכֵנוּ לְשָׁלוֹם וְתַצְעִידֵנוּ לְשָׁלוֹם וְתַדְרִיכֵנוּ לְשָׁלוֹם, וְתִסְמְכֵנוּ לְשָׁלוֹם, וְתַגִּיעֵנוּ לִמְחוֹז חֶפְצֵנוּ לְחַיִּים וּלְשִׂמְחָה וּלְשָׁלוֹם וְתַצִּילֵנוּ מִכַּף כָּל אוֹיֵב וְאוֹרֵב וְלִסְטִים וְחַיּוֹת רָעוֹת בַּדֶּרֶךְ, וּמִכָּל מִינֵי פֻּרְעָנֻיּוֹת הַמִּתְרַגְּשׁוֹת לָבוֹא לָעוֹלָם, וְתִתְּנֵנוּ לְחֵן וּלְחֶסֶד וּלְרַחֲמִים בְּעֵינֶיךָ וּבְעֵינֵי כָל רֹאֵינוּ, כִּי אל שׁוֹמֵעַ תְּפִלָּה וְתַחֲנוּן אַתָּה. בָּרוּךְ אַתָּה יי שׁוֹמֵעַ תְּפִלָּה";
 
   void readAloud() {
     if (!isPlaying) {
@@ -85,7 +93,7 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               padding: EdgeInsets.all(16),
               child: Text(
-                ashkenaz,
+                returnToday ? ashkenaz_returnToday : ashkenaz_notReturnToday,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -93,8 +101,38 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const Text(
+                "חוזרים היום?",
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Switch(
+                  value: returnToday,
+                  onChanged: (value) async {
+                    setState(() {
+                      returnToday = value;
+                    });
+                    if (returnToday) {
+                      await player.setAsset(
+                          "assets/sounds/ashkenaz-female-returnToday.mp3");
+                    } else {
+                      await player.setAsset(
+                          "assets/sounds/ashkenaz-female-notReturnToday.mp3");
+                    }
+                  }),
+            ],
+          ),
           Container(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.all(8),
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
@@ -109,17 +147,33 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Container(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.all(8),
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () async {
+                PrayerParameters? parameters = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AlarmParametersPage()));
+                if (parameters == null) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("תפילה לא נקבעה")));
+                  }
+                  return;
+                }
+                print(parameters);
+                String filename =
+                    "${parameters.prayerType.name}-${parameters.voiceType.name}-${parameters.returnToday.name}.mp3";
+                //TODO use parameters to set alarm
+                //TODO need option to cancel
                 final alarmSettings = AlarmSettings(
                   id: 42,
-                  dateTime: DateTime.now().add(Duration(minutes: 30)),
-                  assetAudioPath: 'assets/sounds/ashkenaz.mp3',
+                  dateTime: DateTime.now().add(parameters.time),
+                  assetAudioPath: 'assets/sounds/$filename',
                   loopAudio: false,
                   vibrate: false,
-                  volumeMax: true,
+                  volumeMax: parameters.maxVolume,
                   fadeDuration: 0,
                   notificationTitle: 'תפילת דרך אוטומטית',
                   notificationBody: 'אומר עכשיו',

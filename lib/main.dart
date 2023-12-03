@@ -2,7 +2,6 @@ import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tefilat_haderech/constants.dart';
-import 'package:tefilat_haderech/prayer_type.dart';
 import 'package:tefilat_haderech/prayer_version_selection.dart';
 import 'package:tefilat_haderech/styles.dart';
 
