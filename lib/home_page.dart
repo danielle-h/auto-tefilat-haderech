@@ -20,6 +20,7 @@ class _HomePageState extends State<HomePage> {
   final player = AudioPlayer();
   bool isPlaying = false;
   bool returnToday = true;
+  bool alarmExists = false;
 
   @override
   void initState() {
@@ -38,6 +39,12 @@ class _HomePageState extends State<HomePage> {
         });
       }
     });
+    AlarmSettings? previousAlarm = Alarm.getAlarm(Constants.alarmId);
+    if (previousAlarm != null) {
+      setState(() {
+        alarmExists = true;
+      });
+    }
     //player.set
   }
 
@@ -90,13 +97,15 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Expanded(
-            child: Container(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                returnToday ? ashkenaz_returnToday : ashkenaz_notReturnToday,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+            child: SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  returnToday ? ashkenaz_returnToday : ashkenaz_notReturnToday,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -132,61 +141,97 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           Container(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.all(16),
             width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                isPlaying ? stop() : readAloud();
-              },
-              child: isPlaying ? Text("לעצור") : Text('לקרא בקול רם'),
-              // style: ButtonStyle(
-              //   backgroundColor: MaterialStateProperty.all(
-              //       AppTheme.lightTheme().primaryColor),
-              //   foregroundColor: MaterialStateProperty.all(Colors.white),
-              // ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(8),
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () async {
-                PrayerParameters? parameters = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AlarmParametersPage()));
-                if (parameters == null) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("תפילה לא נקבעה")));
-                  }
-                  return;
-                }
-                print(parameters);
-                String filename =
-                    "${parameters.prayerType.name}-${parameters.voiceType.name}-${parameters.returnToday.name}.mp3";
-                //TODO use parameters to set alarm
-                //TODO need option to cancel
-                final alarmSettings = AlarmSettings(
-                  id: 42,
-                  dateTime: DateTime.now().add(parameters.time),
-                  assetAudioPath: 'assets/sounds/$filename',
-                  loopAudio: false,
-                  vibrate: false,
-                  volumeMax: parameters.maxVolume,
-                  fadeDuration: 0,
-                  notificationTitle: 'תפילת דרך אוטומטית',
-                  notificationBody: 'אומר עכשיו',
-                  enableNotificationOnKill: true,
-                );
-                await Alarm.set(alarmSettings: alarmSettings);
-              },
-              child: Text('לקרא עוד מעט'),
-              // style: ButtonStyle(
-              //   backgroundColor: MaterialStateProperty.all(
-              //       AppTheme.lightTheme().primaryColor),
-              //   foregroundColor: MaterialStateProperty.all(Colors.white),
-              // ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                alarmExists
+                    ? ElevatedButton(
+                        onPressed: () async {
+                          bool success = await Alarm.stop(Constants.alarmId);
+                          if (success) {
+                            setState(() {
+                              alarmExists = false;
+                            });
+                          }
+                          if (mounted) {
+                            if (success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("תפילה בוטלה בהצלחה")));
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text("ביטול תפילה נכשל")));
+                            }
+                          }
+                        },
+                        child: Text('לבטל תפילה'),
+                        // style: ButtonStyle(
+                        //   backgroundColor: MaterialStateProperty.all(
+                        //       AppTheme.lightTheme().primaryColor),
+                        //   foregroundColor: MaterialStateProperty.all(Colors.white),
+                        // ),
+                      )
+                    : const SizedBox.shrink(),
+                ElevatedButton(
+                  onPressed: () {
+                    isPlaying ? stop() : readAloud();
+                  },
+                  child: isPlaying ? Text("לעצור") : Text('לקרא עכשיו'),
+                  // style: ButtonStyle(
+                  //   backgroundColor: MaterialStateProperty.all(
+                  //       AppTheme.lightTheme().primaryColor),
+                  //   foregroundColor: MaterialStateProperty.all(Colors.white),
+                  // ),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    PrayerParameters? parameters = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AlarmParametersPage()));
+                    if (parameters == null) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("תפילה לא נקבעה")));
+                      }
+                      return;
+                    }
+                    print(parameters);
+                    String filename =
+                        "${parameters.prayerType.name}-${parameters.voiceType.name}-${parameters.returnToday.name}.mp3";
+                    //TODO use parameters to set alarm
+                    //TODO need option to cancel
+                    final alarmSettings = AlarmSettings(
+                      id: Constants.alarmId,
+                      dateTime: DateTime.now().add(parameters.time),
+                      assetAudioPath: 'assets/sounds/$filename',
+                      loopAudio: false,
+                      vibrate: false,
+                      volumeMax: parameters.maxVolume,
+                      fadeDuration: 0,
+                      notificationTitle: 'תפילת דרך אוטומטית',
+                      notificationBody: 'אומר עכשיו',
+                      enableNotificationOnKill: true,
+                    );
+                    bool success =
+                        await Alarm.set(alarmSettings: alarmSettings);
+                    if (success) {
+                      setState(() {
+                        alarmExists = true;
+                      });
+                    }
+                  },
+                  child: Text('לקרא עוד מעט'),
+                  // style: ButtonStyle(
+                  //   backgroundColor: MaterialStateProperty.all(
+                  //       AppTheme.lightTheme().primaryColor),
+                  //   foregroundColor: MaterialStateProperty.all(Colors.white),
+                  // ),
+                ),
+              ],
             ),
           ),
         ],
