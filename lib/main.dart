@@ -47,3 +47,8 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+//TODO attribution!
+//<a href="https://www.flaticon.com/free-icons/road" title="road icons">Road icons created by Freepik - Flaticon</a>
+//https://www.flaticon.com/free-icon/road_2554922?term=way&page=1&position=2&origin=search&related_id=2554922
+//https://easyappicon.com/

@@ -14,7 +14,8 @@
     <application
         android:label="tefilat_haderech"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+    android:roundIcon="@mipmap/ic_launcher_round">
         <service
     android:name="dev.fluttercommunity.plus.androidalarmmanager.AlarmService"
     android:permission="android.permission.BIND_JOB_SERVICE"
@@ -58,4 +59,5 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
 </manifest>
