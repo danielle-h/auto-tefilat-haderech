@@ -24,14 +24,14 @@ class _AlarmParametersPageState extends State<AlarmParametersPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-      appBar: AppBar(
-        title: Text("מה להקריא?"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
         child: Directionality(
-          textDirection: TextDirection.rtl,
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("מה להקריא?"),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
           child: DefaultTextStyle(
             style: Theme.of(context).textTheme.titleLarge!,
             child: SingleChildScrollView(
@@ -55,24 +55,24 @@ class _AlarmParametersPageState extends State<AlarmParametersPage> {
                         children: List.generate(
                             24, (index) => Text("${(index + 1) * 5} דקות"))),
                   ),
-                  const SizedBox(
-                    height: spaceAbove,
-                  ),
-                  Text("נוסח תפילה?"),
-                  const SizedBox(
-                    height: spaceBetween,
-                  ),
-                  DropdownMenu(
-                      onSelected: (value) {
-                        prayerType = value ?? prayerType;
-                      },
-                      initialSelection: prayerType,
-                      dropdownMenuEntries: const [
-                        DropdownMenuEntry<PrayerType>(
-                            value: PrayerType.ashkenaz, label: "אשכנז"),
-                        DropdownMenuEntry<PrayerType>(
-                            value: PrayerType.sepharad, label: "ספרד")
-                      ]),
+                  // const SizedBox(
+                  //   height: spaceAbove,
+                  // ),
+                  // Text("נוסח תפילה?"),
+                  // const SizedBox(
+                  //   height: spaceBetween,
+                  // ),
+                  // DropdownMenu(
+                  //     onSelected: (value) {
+                  //       prayerType = value ?? prayerType;
+                  //     },
+                  //     initialSelection: prayerType,
+                  //     dropdownMenuEntries: const [
+                  //       DropdownMenuEntry<PrayerType>(
+                  //           value: PrayerType.ashkenaz, label: "אשכנז"),
+                  //       DropdownMenuEntry<PrayerType>(
+                  //           value: PrayerType.sepharad, label: "ספרד")
+                  //     ]),
                   const SizedBox(
                     height: spaceAbove,
                   ),

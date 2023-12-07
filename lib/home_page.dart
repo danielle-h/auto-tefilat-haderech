@@ -1,9 +1,11 @@
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tefilat_haderech/alarm_params_page.dart';
 import 'package:tefilat_haderech/prayer_parameters.dart';
 import 'package:tefilat_haderech/prayer_version_selection.dart';
+import 'package:tefilat_haderech/settings_page.dart';
 import 'package:tefilat_haderech/styles.dart';
 
 import 'constants.dart';
@@ -19,13 +21,19 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final player = AudioPlayer();
   bool isPlaying = false;
-  bool returnToday = true;
   bool alarmExists = false;
+  late SharedPreferences prefs;
+  PrayerParameters prayerParameters = PrayerParameters();
 
   @override
   void initState() {
+    loadPrefs();
     initPlayer();
     super.initState();
+  }
+
+  void loadPrefs() async {
+    prefs = await SharedPreferences.getInstance();
   }
 
   Future<void> initPlayer() async {
@@ -54,8 +62,14 @@ class _HomePageState extends State<HomePage> {
   final String ashkenaz_notReturnToday =
       "יְהִי רָצוֹן מִלְפָנֶיךָ יי אֱלֹהֵינוּ וֵאלֹהֵי אֲבוֹתֵינוּ, שֶׁתּוֹלִיכֵנוּ לְשָׁלוֹם וְתַצְעִידֵנוּ לְשָׁלוֹם וְתַדְרִיכֵנוּ לְשָׁלוֹם, וְתִסְמְכֵנוּ לְשָׁלוֹם, וְתַגִּיעֵנוּ לִמְחוֹז חֶפְצֵנוּ לְחַיִּים וּלְשִׂמְחָה וּלְשָׁלוֹם וְתַצִּילֵנוּ מִכַּף כָּל אוֹיֵב וְאוֹרֵב וְלִסְטִים וְחַיּוֹת רָעוֹת בַּדֶּרֶךְ, וּמִכָּל מִינֵי פֻּרְעָנֻיּוֹת הַמִּתְרַגְּשׁוֹת לָבוֹא לָעוֹלָם, וְתִתְּנֵנוּ לְחֵן וּלְחֶסֶד וּלְרַחֲמִים בְּעֵינֶיךָ וּבְעֵינֵי כָל רֹאֵינוּ, כִּי אל שׁוֹמֵעַ תְּפִלָּה וְתַחֲנוּן אַתָּה. בָּרוּךְ אַתָּה יי שׁוֹמֵעַ תְּפִלָּה";
 
-  void readAloud() {
+  void readAloud() async {
     if (!isPlaying) {
+      String voice =
+          prefs.getString(Constants.voiceType) ?? VoiceType.female.name;
+      print(
+          "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
+      await player.setAsset(
+          "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
       setState(() {
         isPlaying = true;
       });
@@ -88,6 +102,17 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text('תפילת הדרך-אשכנז'),
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                );
+              },
+              icon: Icon(Icons.settings),
+            ),
+          ],
         ),
         body: Column(
           children: <Widget>[
@@ -103,10 +128,10 @@ class _HomePageState extends State<HomePage> {
                 child: Container(
                   padding: EdgeInsets.all(16),
                   child: Text(
-                    returnToday
+                    prayerParameters.returnToday == ReturnToday.returnToday
                         ? ashkenaz_returnToday
                         : ashkenaz_notReturnToday,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
@@ -129,19 +154,19 @@ class _HomePageState extends State<HomePage> {
                   width: 10,
                 ),
                 Switch(
-                    value: returnToday,
+                    value:
+                        prayerParameters.returnToday == ReturnToday.returnToday,
                     onChanged: (value) async {
                       setState(() {
-                        returnToday = value;
+                        if (value) {
+                          prayerParameters.returnToday =
+                              ReturnToday.returnToday;
+                        } else {
+                          prayerParameters.returnToday =
+                              ReturnToday.notReturnToday;
+                        }
                       });
-                      if (returnToday) {
-                        await player.setAsset(
-                            "assets/sounds/ashkenaz-female-returnToday.mp3");
-                      } else {
-                        await player.setAsset(
-                            "assets/sounds/ashkenaz-female-notReturnToday.mp3");
-                      }
-                    }),
+                     }),
               ],
             ),
             Container(
@@ -150,6 +175,46 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  // alarmExists
+                  //     ? ElevatedButton(
+                  //         onPressed: () async {
+                  //           bool success = await Alarm.stop(Constants.alarmId);
+                  //           if (success) {
+                  //             setState(() {
+                  //               alarmExists = false;
+                  //             });
+                  //           }
+                  //           if (mounted) {
+                  //             if (success) {
+                  //               ScaffoldMessenger.of(context).showSnackBar(
+                  //                   const SnackBar(
+                  //                       content: Text("השמעה בוטלה בהצלחה")));
+                  //             } else {
+                  //               ScaffoldMessenger.of(context).showSnackBar(
+                  //                   const SnackBar(
+                  //                       content: Text("ביטול השמעה נכשל")));
+                  //             }
+                  //           }
+                  //         },
+                  //         child: Text('לבטל תפילה'),
+                  //         // style: ButtonStyle(
+                  //         //   backgroundColor: MaterialStateProperty.all(
+                  //         //       AppTheme.lightTheme().primaryColor),
+                  //         //   foregroundColor: MaterialStateProperty.all(Colors.white),
+                  //         // ),
+                  //       )
+                  //     : const SizedBox.shrink(),
+                  ElevatedButton(
+                    onPressed: () {
+                      isPlaying ? stop() : readAloud();
+                    },
+                    child: isPlaying ? Text("לעצור") : Text('להשמיע עכשיו'),
+                    // style: ButtonStyle(
+                    //   backgroundColor: MaterialStateProperty.all(
+                    //       AppTheme.lightTheme().primaryColor),
+                    //   foregroundColor: MaterialStateProperty.all(Colors.white),
+                    // ),
+                  ),
                   alarmExists
                       ? ElevatedButton(
                           onPressed: () async {
@@ -171,6 +236,9 @@ class _HomePageState extends State<HomePage> {
                               }
                             }
                           },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.error),
                           child: Text('לבטל תפילה'),
                           // style: ButtonStyle(
                           //   backgroundColor: MaterialStateProperty.all(
@@ -178,63 +246,53 @@ class _HomePageState extends State<HomePage> {
                           //   foregroundColor: MaterialStateProperty.all(Colors.white),
                           // ),
                         )
-                      : const SizedBox.shrink(),
-                  ElevatedButton(
-                    onPressed: () {
-                      isPlaying ? stop() : readAloud();
-                    },
-                    child: isPlaying ? Text("לעצור") : Text('להשמיע עכשיו'),
-                    // style: ButtonStyle(
-                    //   backgroundColor: MaterialStateProperty.all(
-                    //       AppTheme.lightTheme().primaryColor),
-                    //   foregroundColor: MaterialStateProperty.all(Colors.white),
-                    // ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      PrayerParameters? parameters = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AlarmParametersPage()));
-                      if (parameters == null) {
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("השמעה לא נקבעה")));
-                        }
-                        return;
-                      }
-                      print(parameters);
-                      String filename =
-                          "${parameters.prayerType.name}-${parameters.voiceType.name}-${parameters.returnToday.name}.mp3";
-                      //TODO use parameters to set alarm
-                      //TODO need option to cancel
-                      final alarmSettings = AlarmSettings(
-                        id: Constants.alarmId,
-                        dateTime: DateTime.now().add(parameters.time),
-                        assetAudioPath: 'assets/sounds/$filename',
-                        loopAudio: false,
-                        vibrate: false,
-                        volumeMax: parameters.maxVolume,
-                        fadeDuration: 0,
-                        notificationTitle: 'תפילת דרך אוטומטית',
-                        notificationBody: 'אומר עכשיו',
-                        enableNotificationOnKill: true,
-                      );
-                      bool success =
-                          await Alarm.set(alarmSettings: alarmSettings);
-                      if (success) {
-                        setState(() {
-                          alarmExists = true;
-                        });
-                      }
-                    },
-                    child: Text('להשמיע עוד מעט'),
-                    // style: ButtonStyle(
-                    //   backgroundColor: MaterialStateProperty.all(
-                    //       AppTheme.lightTheme().primaryColor),
-                    //   foregroundColor: MaterialStateProperty.all(Colors.white),
-                    // ),
-                  ),
+                      : ElevatedButton(
+                          onPressed: () async {
+                            PrayerParameters? parameters = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        AlarmParametersPage()));
+                            if (parameters == null) {
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text("השמעה לא נקבעה")));
+                              }
+                              return;
+                            }
+                            print(parameters);
+                            String filename =
+                                "${parameters.prayerType.name}-${parameters.voiceType.name}-${parameters.returnToday.name}.mp3";
+                            //TODO use parameters to set alarm
+                            //TODO need option to cancel
+                            final alarmSettings = AlarmSettings(
+                              id: Constants.alarmId,
+                              dateTime: DateTime.now().add(parameters.time),
+                              assetAudioPath: 'assets/sounds/$filename',
+                              loopAudio: false,
+                              vibrate: false,
+                              volumeMax: parameters.maxVolume,
+                              fadeDuration: 0,
+                              notificationTitle: 'תפילת דרך אוטומטית',
+                              notificationBody: 'אומר עכשיו',
+                              enableNotificationOnKill: true,
+                            );
+                            bool success =
+                                await Alarm.set(alarmSettings: alarmSettings);
+                            if (success) {
+                              setState(() {
+                                alarmExists = true;
+                              });
+                            }
+                          },
+                          child: Text('להשמיע עוד מעט'),
+                          // style: ButtonStyle(
+                          //   backgroundColor: MaterialStateProperty.all(
+                          //       AppTheme.lightTheme().primaryColor),
+                          //   foregroundColor: MaterialStateProperty.all(Colors.white),
+                          // ),
+                        ),
                 ],
               ),
             ),

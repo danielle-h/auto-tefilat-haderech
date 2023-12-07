@@ -24,26 +24,27 @@ class MyApp extends StatelessWidget {
       title: 'תפילת הדרך',
       theme: AppTheme.lightTheme(),
       home: Directionality(
-        textDirection: TextDirection.rtl,
-        child: FutureBuilder<SharedPreferences>(
-          future: SharedPreferences.getInstance(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              if (snapshot.data!.containsKey(Constants.firstTimeUse)) {
-                // Not the first time, go directly to main page
-                int index = snapshot.data!.getInt(Constants.prayerVersion) ?? 0;
-                return HomePage(prayerType: PrayerType.values[index]);
-              } else {
-                // First time, show prayer version selection
-                return PrayerVersionSelection();
-              }
-            } else {
-              // Waiting for preferences to be initialized
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
-      ),
+          textDirection: TextDirection.rtl,
+          child: //FutureBuilder<SharedPreferences>(
+              // future: SharedPreferences.getInstance(),
+              // builder: (context, snapshot) {
+              //   if (snapshot.hasData) {
+              //     if (snapshot.data!.containsKey(Constants.firstTimeUse)) {
+              //       // Not the first time, go directly to main page
+              //       int index = snapshot.data!.getInt(Constants.prayerVersion) ?? 0;
+              //return HomePage(prayerType: PrayerType.values[index]);
+              HomePage(prayerType: PrayerType.ashkenaz)
+          //   } else {
+          //     // First time, show prayer version selection
+          //     return PrayerVersionSelection();
+          //   }
+          // } else {
+          //   // Waiting for preferences to be initialized
+          //   return const Center(child: CircularProgressIndicator());
+          // }
+          //},
+          ),
+      // ),
     );
   }
 }
