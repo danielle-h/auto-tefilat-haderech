@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:tefilat_haderech/constants.dart';
 
 class PrayerParameters {

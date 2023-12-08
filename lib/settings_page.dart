@@ -42,7 +42,9 @@ class _SettingsPageState extends State<SettingsPage> {
               tiles: <SettingsTile>[
                 SettingsTile(
                   title: Text("קול"),
-                  value: Text(voice),
+                  value: voice == VoiceType.female.name
+                      ? const Text(Constants.femaleName)
+                      : const Text(Constants.maleName),
                   leading: Icon(Icons.record_voice_over),
                   onPressed: (context) async {
                     String? newVoice = await showDialog<String>(
