@@ -59,6 +59,8 @@ class _HomePageState extends State<HomePage> {
     if (!isPlaying) {
       String voice =
           Provider.of<AppModelNotifier>(context, listen: false).getVoice().name;
+      print(
+          "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
       await player.setAsset(
           "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
       setState(() {

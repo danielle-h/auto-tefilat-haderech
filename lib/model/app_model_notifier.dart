@@ -41,6 +41,11 @@ class AppModelNotifier extends ChangeNotifier {
 
   void updateVoice(VoiceType newVoice) {
     _appVoice = newVoice;
+    SharedPreferences.getInstance().then(
+      (prefs) {
+        prefs.setString(Constants.voiceType, _appVoice.name);
+      },
+    );
     notifyListeners();
   }
 }

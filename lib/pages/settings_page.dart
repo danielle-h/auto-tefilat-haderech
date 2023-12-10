@@ -13,13 +13,17 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  late String voice =
-      Provider.of<AppModelNotifier>(context, listen: false).getVoice().name;
+  String voice = VoiceType.female.name;
+  late AppModelNotifier appModelNotifier =
+      Provider.of<AppModelNotifier>(context, listen: false);
 //  late SharedPreferences prefs;
 
   @override
   void initState() {
     //loadPrefs();
+    setState(() {
+      voice = appModelNotifier.getVoice().name;
+    });
     super.initState();
   }
 
@@ -32,7 +36,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final appModelNotifier = Provider.of<AppModelNotifier>(context);
     return SafeArea(
         child: Directionality(
       textDirection: TextDirection.rtl,
@@ -46,7 +49,7 @@ class _SettingsPageState extends State<SettingsPage> {
               tiles: <SettingsTile>[
                 SettingsTile(
                   title: Text("קול"),
-                  value: voice == VoiceType.female.name
+                  value: voice == Constants.femaleName
                       ? const Text(Constants.femaleName)
                       : const Text(Constants.maleName),
                   leading: Icon(Icons.record_voice_over),
@@ -80,6 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     if (newVoice != null) {
                       setState(() {
                         voice = newVoice;
+                        print("voice is now: $voice");
                       });
                       appModelNotifier.updateVoice(
                           newVoice == Constants.femaleName
