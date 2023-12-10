@@ -13,7 +13,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  String voice = VoiceType.female.name;
   late AppModelNotifier appModelNotifier =
       Provider.of<AppModelNotifier>(context, listen: false);
 //  late SharedPreferences prefs;
@@ -21,9 +20,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     //loadPrefs();
-    setState(() {
-      voice = appModelNotifier.getVoice().name;
-    });
+
     super.initState();
   }
 
@@ -49,9 +46,16 @@ class _SettingsPageState extends State<SettingsPage> {
               tiles: <SettingsTile>[
                 SettingsTile(
                   title: Text("קול"),
-                  value: voice == Constants.femaleName
-                      ? const Text(Constants.femaleName)
-                      : const Text(Constants.maleName),
+                  value: Consumer<AppModelNotifier>(
+                    builder: (context, appModel, child) {
+                      return Text(appModel.getVoice() == VoiceType.female
+                          ? Constants.femaleName
+                          : Constants.maleName);
+                    },
+                  ),
+                  // voice == Constants.femaleName
+                  //     ? const Text(Constants.femaleName)
+                  //     : const Text(Constants.maleName),
                   leading: Icon(Icons.record_voice_over),
                   onPressed: (context) async {
                     String? newVoice = await showDialog<String>(
@@ -81,10 +85,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         });
                     print("settings: $newVoice");
                     if (newVoice != null) {
-                      setState(() {
-                        voice = newVoice;
-                        print("voice is now: $voice");
-                      });
                       appModelNotifier.updateVoice(
                           newVoice == Constants.femaleName
                               ? VoiceType.female
