@@ -3,6 +3,7 @@ class Constants {
   static String firstTimeUse = "firstTimeUse";
   static String prayerVersion = "prayerVersion";
   static String voiceType = "voiceType";
+  static String isDarkTheme = "isDarkTheme";
   //constants
   static const String femaleName = "תהילה";
   static const String maleName = "שמואל";

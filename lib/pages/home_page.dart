@@ -1,12 +1,11 @@
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:tefilat_haderech/model/app_model_notifier.dart';
 import 'package:tefilat_haderech/pages/alarm_params_page.dart';
 import 'package:tefilat_haderech/model/prayer_parameters.dart';
-import 'package:tefilat_haderech/backup/prayer_version_selection.dart';
 import 'package:tefilat_haderech/pages/settings_page.dart';
-import 'package:tefilat_haderech/styles.dart';
 
 import '../constants.dart';
 
@@ -22,23 +21,17 @@ class _HomePageState extends State<HomePage> {
   final player = AudioPlayer();
   bool isPlaying = false;
   bool alarmExists = false;
-  late SharedPreferences prefs;
   PrayerParameters prayerParameters = PrayerParameters();
 
   @override
   void initState() {
-    loadPrefs();
     initPlayer();
     super.initState();
   }
 
-  void loadPrefs() async {
-    prefs = await SharedPreferences.getInstance();
-  }
-
   Future<void> initPlayer() async {
-    await player.setAsset("assets/sounds/ashkenaz-female-notReturnToday.mp3");
-    print("loop mode: ${player.loopMode}");
+    //await player.setAsset("assets/sounds/ashkenaz-female-notReturnToday.mp3");
+    //print("loop mode: ${player.loopMode}");
     player.playerStateStream.listen((playerState) {
       print("playerstate: ${playerState.processingState}");
       if (playerState.processingState == ProcessingState.completed) {
@@ -65,9 +58,7 @@ class _HomePageState extends State<HomePage> {
   void readAloud() async {
     if (!isPlaying) {
       String voice =
-          prefs.getString(Constants.voiceType) ?? VoiceType.female.name;
-      print(
-          "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
+          Provider.of<AppModelNotifier>(context, listen: false).getVoice().name;
       await player.setAsset(
           "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
       setState(() {

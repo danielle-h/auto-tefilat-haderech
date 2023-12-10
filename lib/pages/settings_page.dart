@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tefilat_haderech/constants.dart';
 import 'package:tefilat_haderech/model/app_model_notifier.dart';
 import 'package:tefilat_haderech/styles.dart';
@@ -14,21 +13,22 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  String voice = Constants.femaleName; //TODO read from prefs
-  late SharedPreferences prefs;
+  late String voice =
+      Provider.of<AppModelNotifier>(context, listen: false).getVoice().name;
+//  late SharedPreferences prefs;
 
   @override
   void initState() {
-    loadPrefs();
+    //loadPrefs();
     super.initState();
   }
 
-  void loadPrefs() async {
-    prefs = await SharedPreferences.getInstance();
-    setState(() {
-      voice = prefs.getString(Constants.voiceType) ?? VoiceType.female.name;
-    });
-  }
+  // void loadPrefs() async {
+  //   prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     voice = prefs.getString(Constants.voiceType) ?? VoiceType.female.name;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -81,11 +81,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       setState(() {
                         voice = newVoice;
                       });
-                      prefs.setString(
-                          Constants.voiceType,
+                      appModelNotifier.updateVoice(
                           newVoice == Constants.femaleName
-                              ? VoiceType.female.name
-                              : VoiceType.male.name);
+                              ? VoiceType.female
+                              : VoiceType.male);
                     }
                   },
                 ),

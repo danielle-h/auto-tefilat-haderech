@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appModelNotifier = Provider.of<AppModelNotifier>(context);
+    appModelNotifier.updateModel();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'תפילת הדרך',
