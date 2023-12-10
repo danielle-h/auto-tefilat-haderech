@@ -1,16 +1,17 @@
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import 'package:tefilat_haderech/constants.dart';
-import 'package:tefilat_haderech/prayer_version_selection.dart';
+import 'package:tefilat_haderech/model/app_model_notifier.dart';
 import 'package:tefilat_haderech/styles.dart';
 
-import 'home_page.dart';
+import 'pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Alarm.init();
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+      create: (context) => AppModelNotifier(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -19,10 +20,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final appModelNotifier = Provider.of<AppModelNotifier>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'תפילת הדרך',
-      theme: AppTheme.lightTheme(),
+      theme: appModelNotifier.getTheme(),
       home: Directionality(
           textDirection: TextDirection.rtl,
           child: //FutureBuilder<SharedPreferences>(

@@ -2,13 +2,13 @@ import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tefilat_haderech/alarm_params_page.dart';
-import 'package:tefilat_haderech/prayer_parameters.dart';
-import 'package:tefilat_haderech/prayer_version_selection.dart';
-import 'package:tefilat_haderech/settings_page.dart';
+import 'package:tefilat_haderech/pages/alarm_params_page.dart';
+import 'package:tefilat_haderech/model/prayer_parameters.dart';
+import 'package:tefilat_haderech/backup/prayer_version_selection.dart';
+import 'package:tefilat_haderech/pages/settings_page.dart';
 import 'package:tefilat_haderech/styles.dart';
 
-import 'constants.dart';
+import '../constants.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key, required this.prayerType});

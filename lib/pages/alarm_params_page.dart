@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tefilat_haderech/constants.dart';
-import 'package:tefilat_haderech/prayer_parameters.dart';
+import 'package:tefilat_haderech/model/prayer_parameters.dart';
 
 class AlarmParametersPage extends StatefulWidget {
   AlarmParametersPage({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tefilat_haderech/constants.dart';
-import 'package:tefilat_haderech/home_page.dart';
+import 'package:tefilat_haderech/pages/home_page.dart';
 
 class PrayerVersionSelection extends StatefulWidget {
   @override

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tefilat_haderech/constants.dart';
+import 'package:tefilat_haderech/model/app_model_notifier.dart';
+import 'package:tefilat_haderech/styles.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -29,6 +32,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final appModelNotifier = Provider.of<AppModelNotifier>(context);
     return SafeArea(
         child: Directionality(
       textDirection: TextDirection.rtl,
@@ -86,11 +90,15 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                 ),
                 SettingsTile.switchTile(
-                  onToggle: (value) {},
-                  enabled: false,
-                  initialValue: false,
+                  onToggle: (value) {
+                    appModelNotifier.toggleTheme();
+                  },
+                  //enabled: false,
+                  initialValue:
+                      appModelNotifier.getTheme() == AppTheme.darkTheme(),
+
                   leading: Icon(Icons.format_paint),
-                  title: Text('מצב כהה (בקרוב)'),
+                  title: Text('מצב כהה'),
                 ),
               ],
             ),

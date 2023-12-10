@@ -13,9 +13,10 @@ class AppTheme {
     );
   }
 
-  static ThemeData darkTheme() { 
+  static ThemeData darkTheme() {
     return ThemeData(
       colorScheme: ColorScheme.fromSeed(
+          surface: _deepAqua,
           seedColor: _pastelGreen,
           secondary: _deepAqua,
           brightness: Brightness.dark),
