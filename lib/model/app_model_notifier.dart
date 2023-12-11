@@ -31,15 +31,13 @@ class AppModelNotifier extends ChangeNotifier {
     _appTheme = (prefs.getBool(Constants.isDarkTheme) ?? false)
         ? AppTheme.darkTheme()
         : AppTheme.lightTheme();
-    _appVoice =
-        ((prefs.getString(Constants.voiceType) ?? VoiceType.female.name) ==
-                VoiceType.female.name)
-            ? VoiceType.female
-            : VoiceType.male;
+    _appVoice = (Util.string2VoiceType(
+        prefs.getString(Constants.voiceType) ?? VoiceType.female.name));
     notifyListeners();
   }
 
   void updateVoice(VoiceType newVoice) {
+    print("newVoice: $newVoice");
     _appVoice = newVoice;
     SharedPreferences.getInstance().then(
       (prefs) {

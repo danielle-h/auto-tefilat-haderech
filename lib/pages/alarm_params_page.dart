@@ -91,7 +91,10 @@ class _AlarmParametersPageState extends State<AlarmParametersPage> {
                             value: VoiceType.female,
                             label: Constants.femaleName),
                         DropdownMenuEntry<VoiceType>(
-                            value: VoiceType.male, label: Constants.maleName)
+                            value: VoiceType.male, label: Constants.maleName),
+                        DropdownMenuEntry<VoiceType>(
+                            value: VoiceType.custom,
+                            label: Constants.customName)
                       ]),
                   //return today?
                   const SizedBox(

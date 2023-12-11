@@ -30,12 +30,15 @@ environment:
 dependencies:
   alarm: ^2.1.1
   cupertino_icons: ^1.0.2
+  file_picker: ^6.1.1
   flutter:
     sdk: flutter
   just_audio: ^0.9.36
+  path_provider: ^2.1.1
   provider: ^6.1.1
   settings_ui: ^2.0.2
   shared_preferences: ^2.2.2
+  uri_to_file: ^1.0.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0

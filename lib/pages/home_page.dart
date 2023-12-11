@@ -55,14 +55,22 @@ class _HomePageState extends State<HomePage> {
   final String ashkenaz_notReturnToday =
       "יְהִי רָצוֹן מִלְּפָנֶיךָ יְהֹוָה אֱלֹהֵנוּ וֵאֱלֹהֵי אֲבוֹתֵינוּ, שֶׁתּוֹלִיכֵנוּ לְשָׁלוֹם וְתַצְעִידֵנוּ לְשָׁלוֹם, וְתִסְמְכֵנוּ לְשָׁלוֹם, וְתַנְחֵנוּ אֶל מְחוֹז חֶפְצֵנוּ לְחַיִּים וְלְשִּׂמְחָה ולְשָּׁלוֹם. וְתַצִּילֵנוּ מִכַּף כׇּל אוֹיֵב וְאוֹרֵב בַּדֶּרֶךְ וּמִכׇּל מִינֵי פֻּרְעָנֻיּוֹת הַמִּתְרַגְּשׁוֹת לָבוֹא לָעוֹלָם, וְתִשְׁלַח בְּרָכָה בְּמַעֲשֵׂה יָדֵינוּ. וְתִתְנְנוֹ לְחֵן וּלְחֶסֶד וּלְרַחֲמִים בְּעֵינֶיךָ וּבְעֵינֵי כׇּל רוֹאֵינוּ, וְתִשְׁמַע קוֹל תַּחֲנוּנֵינוּ. כִּי אֵל שׁוֹמֵעַ תְּפִלָּה וְתַחֲנוּן אַתָּה. בָּרוּךְ אַתָּה יְהֹוָה שׁוֹמֵעַ תְּפִלָּה.";
 
-  void readAloud() async {
+  void readAloud(VoiceType voiceType) async {
     if (!isPlaying) {
-      String voice =
-          Provider.of<AppModelNotifier>(context, listen: false).getVoice().name;
-      print(
-          "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
-      await player.setAsset(
-          "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
+      print("home voice: $voiceType");
+      String voice = voiceType.name;
+
+      if (voiceType != VoiceType.custom) {
+        print(
+            "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
+        await player.setAsset(
+            "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
+      } else {
+        print(
+            "/data/user/0/com.example.tefilat_haderech/app_flutter/custom.mp3");
+        await player.setFilePath(
+            "/data/user/0/com.example.tefilat_haderech/app_flutter/custom.mp3");
+      }
       setState(() {
         isPlaying = true;
       });
@@ -197,16 +205,21 @@ class _HomePageState extends State<HomePage> {
                   //         // ),
                   //       )
                   //     : const SizedBox.shrink(),
-                  ElevatedButton(
-                    onPressed: () {
-                      isPlaying ? stop() : readAloud();
+                  Consumer<AppModelNotifier>(
+                    builder: (context, appModel, child) {
+                      return ElevatedButton(
+                        onPressed: () {
+                          print("onpressed: ${appModel.getVoice()}");
+                          isPlaying ? stop() : readAloud(appModel.getVoice());
+                        },
+                        child: isPlaying ? Text("לעצור") : Text('להשמיע עכשיו'),
+                        // style: ButtonStyle(
+                        //   backgroundColor: MaterialStateProperty.all(
+                        //       AppTheme.lightTheme().primaryColor),
+                        //   foregroundColor: MaterialStateProperty.all(Colors.white),
+                        // ),
+                      );
                     },
-                    child: isPlaying ? Text("לעצור") : Text('להשמיע עכשיו'),
-                    // style: ButtonStyle(
-                    //   backgroundColor: MaterialStateProperty.all(
-                    //       AppTheme.lightTheme().primaryColor),
-                    //   foregroundColor: MaterialStateProperty.all(Colors.white),
-                    // ),
                   ),
                   alarmExists
                       ? ElevatedButton(
@@ -262,7 +275,10 @@ class _HomePageState extends State<HomePage> {
                             final alarmSettings = AlarmSettings(
                               id: Constants.alarmId,
                               dateTime: DateTime.now().add(parameters.time),
-                              assetAudioPath: 'assets/sounds/$filename',
+                              assetAudioPath: parameters.voiceType ==
+                                      VoiceType.custom
+                                  ? "/data/user/0/com.example.tefilat_haderech/app_flutter/custom.mp3"
+                                  : 'assets/sounds/$filename',
                               loopAudio: false,
                               vibrate: false,
                               volumeMax: parameters.maxVolume,

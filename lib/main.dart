@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
               //   if (snapshot.hasData) {
               //     if (snapshot.data!.containsKey(Constants.firstTimeUse)) {
               //       // Not the first time, go directly to main page
-              //       int index = snapshot.data!.getInt(Constants.prayerVersion) ?? 0;
+              //       int index = snapshot.data!.getInt(Constants.prayerVersion) ?? 0; 
               //return HomePage(prayerType: PrayerType.values[index]);
               HomePage(prayerType: PrayerType.ashkenaz)
           //   } else {

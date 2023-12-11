@@ -1,9 +1,14 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:tefilat_haderech/constants.dart';
 import 'package:tefilat_haderech/model/app_model_notifier.dart';
 import 'package:tefilat_haderech/styles.dart';
+import 'package:uri_to_file/uri_to_file.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -48,9 +53,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: Text("קול"),
                   value: Consumer<AppModelNotifier>(
                     builder: (context, appModel, child) {
-                      return Text(appModel.getVoice() == VoiceType.female
-                          ? Constants.femaleName
-                          : Constants.maleName);
+                      return Text(Util.voiceType2String(appModel.getVoice()));
                     },
                   ),
                   // voice == Constants.femaleName
@@ -78,6 +81,36 @@ class _SettingsPageState extends State<SettingsPage> {
                                     Navigator.pop(context, Constants.maleName);
                                   },
                                   child: const Text(Constants.maleName),
+                                ),
+                                SimpleDialogOption(
+                                  onPressed: () async {
+                                    FilePickerResult? result = await FilePicker
+                                        .platform
+                                        .pickFiles(type: FileType.audio);
+                                    if (result != null) {
+                                      PlatformFile file = result.files.first;
+                                      final directory =
+                                          await getApplicationDocumentsDirectory();
+                                      print("uri: ${file.identifier}");
+                                      File pickedFile =
+                                          await toFile(file.identifier!);
+                                      print("picked file: ${pickedFile.path}");
+                                      // File pickedFile = File.fromUri(
+                                      //     Uri.parse(file.identifier!));
+                                      File cachedFile = await pickedFile.copy(
+                                          "${directory.path}${Platform.pathSeparator}custom.mp3");
+
+                                      print(
+                                          "files: ${file.name} ${cachedFile.path}");
+                                      if (mounted) {
+                                        Navigator.pop(context, cachedFile.path);
+                                      }
+                                    }
+                                    if (mounted) {
+                                      Navigator.pop(context, null);
+                                    }
+                                  },
+                                  child: const Text("לבחור קובץ..."),
                                 )
                               ],
                             ),
@@ -85,10 +118,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         });
                     print("settings: $newVoice");
                     if (newVoice != null) {
-                      appModelNotifier.updateVoice(
-                          newVoice == Constants.femaleName
-                              ? VoiceType.female
-                              : VoiceType.male);
+                      appModelNotifier
+                          .updateVoice(Util.string2VoiceType(newVoice));
                     }
                   },
                 ),
