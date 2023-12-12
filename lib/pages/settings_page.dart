@@ -154,69 +154,153 @@ class _SettingsPageState extends State<SettingsPage> {
                 SettingsTile.navigation(
                     leading: const Icon(Icons.question_mark),
                     onPressed: (context) {
-                      showAboutDialog(
+                      showDialog(
                           context: context,
-                          applicationVersion: "1.0.0", //TODO package_info_plus
-                          applicationName: "תפילת דרך אוטומטית",
-                          applicationLegalese:
-                              "כל הזכויות שמורות לדניאל הוניגשטיין 2023",
-                          children: [
-                            const Directionality(
+                          builder: ((context) {
+                            String appName = "תפילת דרך אוטומטית";
+                            String version = "1.0.0"; //TODO package_info_plus
+                            String copyright =
+                                "כל הזכויות שמורות לדניאל הוניגשטיין 2023";
+                            return Directionality(
                               textDirection: TextDirection.rtl,
-                              child: Text(
-                                  "האפליקציה משמיעה את תפילת הדרך בזמן שאתם קובעים."),
-                            ),
-                            const Directionality(
-                                textDirection: TextDirection.rtl,
-                                child:
-                                    Text("אתם יכולים גם להעלות הקלטה שלכם.")),
-                            const Directionality(
-                                textDirection: TextDirection.rtl,
-                                child:
-                                    Text("האפליקציה חינמית והקוד שלה פתוח:")),
-                            Link(
-                                uri: Uri.parse(
-                                    "https://github.com/danielle-h/auto-tefilat-haderech"),
-                                target: LinkTarget.defaultTarget,
-                                builder:
-                                    (BuildContext ctx, FollowLink? openLink) {
-                                  return TextButton(
-                                      onPressed: openLink,
-                                      child: Text("צפו בקוד"));
-                                }),
-                            const Directionality(
-                                textDirection: TextDirection.rtl,
-                                child: Text("יש עוד דברים מעניינים באתר שלי")),
-                            Link(
-                                uri: Uri.parse("https://danielle-honig.com/"),
-                                target: LinkTarget.defaultTarget,
-                                builder:
-                                    (BuildContext ctx, FollowLink? openLink) {
-                                  return TextButton(
-                                      onPressed: openLink,
-                                      child: Text("אתר שלי"));
-                                }),
-                            const Directionality(
-                                textDirection: TextDirection.rtl,
-                                child: Text(
-                                    "אם אהבתם מוזמנים לקנות לי שוקו: (אני לא אוהבת קפה ;) )")),
-                            Link(
-                                uri: Uri.parse(
-                                    "https://www.buymeacoffee.com/369wkrttu6"),
-                                target: LinkTarget.defaultTarget,
-                                builder:
-                                    (BuildContext ctx, FollowLink? openLink) {
-                                  return TextButton(
-                                      onPressed: openLink,
-                                      child: Text("קנו לי שוקו"));
-                                }),
-                            const Directionality(
-                                textDirection: TextDirection.rtl,
-                                child: Text(
-                                  "תודה רבה!",
+                              child: AlertDialog(
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        showLicensePage(context: context);
+                                      },
+                                      child: Text("כל הרשיונות")),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text("סיימתי")),
+                                ],
+                                title: Text(
+                                  "$appName $version",
                                   textAlign: TextAlign.center,
-                                )),
-                          ]);
+                                ),
+                                content: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(copyright),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      const Text(
+                                          "האפליקציה משמיעה את תפילת הדרך בזמן שאתם קובעים."),
+                                      const Text(
+                                          "אתם יכולים גם להעלות הקלטה שלכם."),
+                                      const Text(
+                                          "האפליקציה חינמית והקוד שלה פתוח:"),
+                                      Link(
+                                          uri: Uri.parse(
+                                              "https://github.com/danielle-h/auto-tefilat-haderech"),
+                                          target: LinkTarget.defaultTarget,
+                                          builder: (BuildContext ctx,
+                                              FollowLink? openLink) {
+                                            return TextButton(
+                                                onPressed: openLink,
+                                                child: Text("צפו בקוד"));
+                                          }),
+                                      const Text(
+                                          "יש עוד דברים מעניינים באתר שלי"),
+                                      Link(
+                                          uri: Uri.parse(
+                                              "https://danielle-honig.com/"),
+                                          target: LinkTarget.defaultTarget,
+                                          builder: (BuildContext ctx,
+                                              FollowLink? openLink) {
+                                            return TextButton(
+                                                onPressed: openLink,
+                                                child: Text("אתר שלי"));
+                                          }),
+                                      const Text(
+                                          "אם אהבתם מוזמנים לקנות לי שוקו: (אני לא אוהבת קפה ;) )"),
+                                      Link(
+                                          uri: Uri.parse(
+                                              "https://www.buymeacoffee.com/369wkrttu6"),
+                                          target: LinkTarget.defaultTarget,
+                                          builder: (BuildContext ctx,
+                                              FollowLink? openLink) {
+                                            return TextButton(
+                                                onPressed: openLink,
+                                                child: Text("קנו לי שוקו"));
+                                          }),
+                                      Text(
+                                        "תודה רבה!",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ]),
+                              ),
+                            );
+                          }));
+
+                      // showAboutDialog(
+                      //     context: context,
+                      //     applicationVersion: "1.0.0", //TODO package_info_plus
+                      //     applicationName: "תפילת דרך אוטומטית",
+                      //     applicationLegalese:
+                      //         "כל הזכויות שמורות לדניאל הוניגשטיין 2023",
+                      //     children: [
+                      //       const Directionality(
+                      //         textDirection: TextDirection.rtl,
+                      //         child: Text(
+                      //             "האפליקציה משמיעה את תפילת הדרך בזמן שאתם קובעים."),
+                      //       ),
+                      //       const Directionality(
+                      //           textDirection: TextDirection.rtl,
+                      //           child:
+                      //               Text("אתם יכולים גם להעלות הקלטה שלכם.")),
+                      //       const Directionality(
+                      //           textDirection: TextDirection.rtl,
+                      //           child:
+                      //               Text("האפליקציה חינמית והקוד שלה פתוח:")),
+                      //       Link(
+                      //           uri: Uri.parse(
+                      //               "https://github.com/danielle-h/auto-tefilat-haderech"),
+                      //           target: LinkTarget.defaultTarget,
+                      //           builder:
+                      //               (BuildContext ctx, FollowLink? openLink) {
+                      //             return TextButton(
+                      //                 onPressed: openLink,
+                      //                 child: Text("צפו בקוד"));
+                      //           }),
+                      //       const Directionality(
+                      //           textDirection: TextDirection.rtl,
+                      //           child: Text("יש עוד דברים מעניינים באתר שלי")),
+                      //       Link(
+                      //           uri: Uri.parse("https://danielle-honig.com/"),
+                      //           target: LinkTarget.defaultTarget,
+                      //           builder:
+                      //               (BuildContext ctx, FollowLink? openLink) {
+                      //             return TextButton(
+                      //                 onPressed: openLink,
+                      //                 child: Text("אתר שלי"));
+                      //           }),
+                      //       const Directionality(
+                      //           textDirection: TextDirection.rtl,
+                      //           child: Text(
+                      //               "אם אהבתם מוזמנים לקנות לי שוקו: (אני לא אוהבת קפה ;) )")),
+                      //       Link(
+                      //           uri: Uri.parse(
+                      //               "https://www.buymeacoffee.com/369wkrttu6"),
+                      //           target: LinkTarget.defaultTarget,
+                      //           builder:
+                      //               (BuildContext ctx, FollowLink? openLink) {
+                      //             return TextButton(
+                      //                 onPressed: openLink,
+                      //                 child: Text("קנו לי שוקו"));
+                      //           }),
+                      //       const Directionality(
+                      //           textDirection: TextDirection.rtl,
+                      //           child: Text(
+                      //             "תודה רבה!",
+                      //             textAlign: TextAlign.center,
+                      //           )),
+                      //     ]);
                     },
                     value: Text("גרסה 1.0.0"),
                     title: const Text("על האפליקציה"))
