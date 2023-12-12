@@ -147,7 +147,6 @@ class _HomePageState extends State<HomePage> {
                   "חוזרים היום?",
                   style: TextStyle(
                     fontSize: 24,
-                    color: Colors.black,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

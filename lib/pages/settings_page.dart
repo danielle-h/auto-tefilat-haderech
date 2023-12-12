@@ -53,12 +53,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: Text("קול"),
                   value: Consumer<AppModelNotifier>(
                     builder: (context, appModel, child) {
-                      return Text(Util.voiceType2String(appModel.getVoice()));
+                      if (appModel.getVoice() != VoiceType.custom) {
+                        return Text(Util.voiceType2String(appModel.getVoice()));
+                      }
+                      return Text(appModel.getFilename());
                     },
                   ),
-                  // voice == Constants.femaleName
-                  //     ? const Text(Constants.femaleName)
-                  //     : const Text(Constants.maleName),
                   leading: Icon(Icons.record_voice_over),
                   onPressed: (context) async {
                     String? newVoice = await showDialog<String>(
@@ -82,6 +82,16 @@ class _SettingsPageState extends State<SettingsPage> {
                                   },
                                   child: const Text(Constants.maleName),
                                 ),
+                                appModelNotifier.getFilename().isEmpty
+                                    ? const SizedBox.shrink()
+                                    : SimpleDialogOption(
+                                        onPressed: () {
+                                          Navigator.pop(context,
+                                              appModelNotifier.getFilename());
+                                        },
+                                        child: Text(
+                                            appModelNotifier.getFilename()),
+                                      ),
                                 SimpleDialogOption(
                                   onPressed: () async {
                                     FilePickerResult? result = await FilePicker
@@ -102,9 +112,11 @@ class _SettingsPageState extends State<SettingsPage> {
 
                                       print(
                                           "files: ${file.name} ${cachedFile.path}");
-                                      if (mounted) {
-                                        Navigator.pop(context, cachedFile.path);
-                                      }
+                                      appModelNotifier
+                                          .updateFilename(file.name);
+                                      // if (mounted) {
+                                      //   Navigator.pop(context, file.name);
+                                      // }
                                     }
                                     if (mounted) {
                                       Navigator.pop(context, null);
@@ -118,8 +130,11 @@ class _SettingsPageState extends State<SettingsPage> {
                         });
                     print("settings: $newVoice");
                     if (newVoice != null) {
-                      appModelNotifier
-                          .updateVoice(Util.string2VoiceType(newVoice));
+                      VoiceType voiceType = Util.string2VoiceType(newVoice);
+                      appModelNotifier.updateVoice(voiceType);
+                      if (voiceType == VoiceType.custom) {
+                        appModelNotifier.updateFilename(newVoice);
+                      }
                     }
                   },
                 ),
