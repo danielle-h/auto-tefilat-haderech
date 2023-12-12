@@ -9,6 +9,8 @@ import 'package:tefilat_haderech/constants.dart';
 import 'package:tefilat_haderech/model/app_model_notifier.dart';
 import 'package:tefilat_haderech/styles.dart';
 import 'package:uri_to_file/uri_to_file.dart';
+import 'package:url_launcher/link.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -149,6 +151,33 @@ class _SettingsPageState extends State<SettingsPage> {
                   leading: Icon(Icons.format_paint),
                   title: Text('מצב כהה'),
                 ),
+                SettingsTile.navigation(
+                    leading: const Icon(Icons.question_mark),
+                    onPressed: (context) {
+                      showAboutDialog(
+                          context: context,
+                          applicationVersion: "1.0.0", //TODO package_info_plus
+                          applicationName: "תפילת דרך אוטומטית",
+                          applicationLegalese:
+                              "כל הזכויות שמורות לדניאל הוניגשטיין 2023",
+                          children: [
+                            const Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text(
+                                  "האפליקציה משמיעה את תפילת הדרך בזמן שאתם קובעים."),
+                            ),
+                            const Directionality(
+                                textDirection: TextDirection.rtl,
+                                child:
+                                    Text("אתם יכולים גם להעלות הקלטה שלכם.")),
+                            const Directionality(
+                                textDirection: TextDirection.rtl,
+                                child: Text("האפליקציה חינמית והקוד שלה פתוח")),
+                            //Link(uri: Uri.parse(uri), builder: builder)
+                          ]);
+                    },
+                    value: Text("גרסה 1.0.0"),
+                    title: const Text("על האפליקציה"))
               ],
             ),
           ],
