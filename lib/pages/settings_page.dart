@@ -172,8 +172,50 @@ class _SettingsPageState extends State<SettingsPage> {
                                     Text("אתם יכולים גם להעלות הקלטה שלכם.")),
                             const Directionality(
                                 textDirection: TextDirection.rtl,
-                                child: Text("האפליקציה חינמית והקוד שלה פתוח")),
-                            //Link(uri: Uri.parse(uri), builder: builder)
+                                child:
+                                    Text("האפליקציה חינמית והקוד שלה פתוח:")),
+                            Link(
+                                uri: Uri.parse(
+                                    "https://github.com/danielle-h/auto-tefilat-haderech"),
+                                target: LinkTarget.defaultTarget,
+                                builder:
+                                    (BuildContext ctx, FollowLink? openLink) {
+                                  return TextButton(
+                                      onPressed: openLink,
+                                      child: Text("צפו בקוד"));
+                                }),
+                            const Directionality(
+                                textDirection: TextDirection.rtl,
+                                child: Text("יש עוד דברים מעניינים באתר שלי")),
+                            Link(
+                                uri: Uri.parse("https://danielle-honig.com/"),
+                                target: LinkTarget.defaultTarget,
+                                builder:
+                                    (BuildContext ctx, FollowLink? openLink) {
+                                  return TextButton(
+                                      onPressed: openLink,
+                                      child: Text("אתר שלי"));
+                                }),
+                            const Directionality(
+                                textDirection: TextDirection.rtl,
+                                child: Text(
+                                    "אם אהבתם מוזמנים לקנות לי שוקו: (אני לא אוהבת קפה ;) )")),
+                            Link(
+                                uri: Uri.parse(
+                                    "https://www.buymeacoffee.com/369wkrttu6"),
+                                target: LinkTarget.defaultTarget,
+                                builder:
+                                    (BuildContext ctx, FollowLink? openLink) {
+                                  return TextButton(
+                                      onPressed: openLink,
+                                      child: Text("קנו לי שוקו"));
+                                }),
+                            const Directionality(
+                                textDirection: TextDirection.rtl,
+                                child: Text(
+                                  "תודה רבה!",
+                                  textAlign: TextAlign.center,
+                                )),
                           ]);
                     },
                     value: Text("גרסה 1.0.0"),

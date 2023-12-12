@@ -243,7 +243,10 @@ class _HomePageState extends State<HomePage> {
                           },
                           style: ElevatedButton.styleFrom(
                               backgroundColor:
-                                  Theme.of(context).colorScheme.error),
+                                  Theme.of(context).colorScheme.error,
+                              foregroundColor:
+                                  Theme.of(context).colorScheme.onError),
+
                           child: Text('לבטל תפילה'),
                           // style: ButtonStyle(
                           //   backgroundColor: MaterialStateProperty.all(

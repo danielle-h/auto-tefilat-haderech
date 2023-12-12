@@ -7,8 +7,8 @@ class AppTheme {
 
   static ThemeData lightTheme() {
     return ThemeData(
-      colorScheme:
-          ColorScheme.fromSeed(seedColor: _deepAqua, tertiary: _navyBlue),
+      colorScheme: ColorScheme.fromSeed(
+          seedColor: _deepAqua, surface: _pastelGreen, tertiary: _navyBlue),
       scaffoldBackgroundColor: Colors.white,
     );
   }
@@ -20,7 +20,7 @@ class AppTheme {
           seedColor: _pastelGreen,
           secondary: _deepAqua,
           brightness: Brightness.dark),
-      scaffoldBackgroundColor: Colors.black,
+      //scaffoldBackgroundColor: Colors.black,
       // textTheme: const TextTheme(
       //   bodyLarge: TextStyle(color: Colors.white),
       //   bodyMedium: TextStyle(color: Colors.white),
