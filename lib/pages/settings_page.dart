@@ -10,7 +10,6 @@ import 'package:tefilat_haderech/model/app_model_notifier.dart';
 import 'package:tefilat_haderech/styles.dart';
 import 'package:uri_to_file/uri_to_file.dart';
 import 'package:url_launcher/link.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -30,13 +29,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
     super.initState();
   }
-
-  // void loadPrefs() async {
-  //   prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     voice = prefs.getString(Constants.voiceType) ?? VoiceType.female.name;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -107,8 +99,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                       File pickedFile =
                                           await toFile(file.identifier!);
                                       print("picked file: ${pickedFile.path}");
-                                      // File pickedFile = File.fromUri(
-                                      //     Uri.parse(file.identifier!));
                                       File cachedFile = await pickedFile.copy(
                                           "${directory.path}${Platform.pathSeparator}custom.mp3");
 
@@ -116,9 +106,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                           "files: ${file.name} ${cachedFile.path}");
                                       appModelNotifier
                                           .updateFilename(file.name);
-                                      // if (mounted) {
-                                      //   Navigator.pop(context, file.name);
-                                      // }
                                     }
                                     if (mounted) {
                                       Navigator.pop(context, null);
@@ -237,70 +224,6 @@ class _SettingsPageState extends State<SettingsPage> {
                               ),
                             );
                           }));
-
-                      // showAboutDialog(
-                      //     context: context,
-                      //     applicationVersion: "1.0.0", //TODO package_info_plus
-                      //     applicationName: "תפילת דרך אוטומטית",
-                      //     applicationLegalese:
-                      //         "כל הזכויות שמורות לדניאל הוניגשטיין 2023",
-                      //     children: [
-                      //       const Directionality(
-                      //         textDirection: TextDirection.rtl,
-                      //         child: Text(
-                      //             "האפליקציה משמיעה את תפילת הדרך בזמן שאתם קובעים."),
-                      //       ),
-                      //       const Directionality(
-                      //           textDirection: TextDirection.rtl,
-                      //           child:
-                      //               Text("אתם יכולים גם להעלות הקלטה שלכם.")),
-                      //       const Directionality(
-                      //           textDirection: TextDirection.rtl,
-                      //           child:
-                      //               Text("האפליקציה חינמית והקוד שלה פתוח:")),
-                      //       Link(
-                      //           uri: Uri.parse(
-                      //               "https://github.com/danielle-h/auto-tefilat-haderech"),
-                      //           target: LinkTarget.defaultTarget,
-                      //           builder:
-                      //               (BuildContext ctx, FollowLink? openLink) {
-                      //             return TextButton(
-                      //                 onPressed: openLink,
-                      //                 child: Text("צפו בקוד"));
-                      //           }),
-                      //       const Directionality(
-                      //           textDirection: TextDirection.rtl,
-                      //           child: Text("יש עוד דברים מעניינים באתר שלי")),
-                      //       Link(
-                      //           uri: Uri.parse("https://danielle-honig.com/"),
-                      //           target: LinkTarget.defaultTarget,
-                      //           builder:
-                      //               (BuildContext ctx, FollowLink? openLink) {
-                      //             return TextButton(
-                      //                 onPressed: openLink,
-                      //                 child: Text("אתר שלי"));
-                      //           }),
-                      //       const Directionality(
-                      //           textDirection: TextDirection.rtl,
-                      //           child: Text(
-                      //               "אם אהבתם מוזמנים לקנות לי שוקו: (אני לא אוהבת קפה ;) )")),
-                      //       Link(
-                      //           uri: Uri.parse(
-                      //               "https://www.buymeacoffee.com/369wkrttu6"),
-                      //           target: LinkTarget.defaultTarget,
-                      //           builder:
-                      //               (BuildContext ctx, FollowLink? openLink) {
-                      //             return TextButton(
-                      //                 onPressed: openLink,
-                      //                 child: Text("קנו לי שוקו"));
-                      //           }),
-                      //       const Directionality(
-                      //           textDirection: TextDirection.rtl,
-                      //           child: Text(
-                      //             "תודה רבה!",
-                      //             textAlign: TextAlign.center,
-                      //           )),
-                      //     ]);
                     },
                     value: Text("גרסה 1.0.0"),
                     title: const Text("על האפליקציה"))

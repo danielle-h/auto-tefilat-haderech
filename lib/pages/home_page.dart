@@ -17,14 +17,27 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final player = AudioPlayer();
   bool isPlaying = false;
   bool alarmExists = false;
   PrayerParameters prayerParameters = PrayerParameters();
 
+  //animation
+  late AnimationController animationController;
+  late Animation<double> animation;
+  List<double> slide = [10, 30, 50, 90];
+
   @override
   void initState() {
+    animationController = AnimationController(
+        duration: const Duration(milliseconds: 1000), vsync: this);
+    animation = CurvedAnimation(
+        parent: animationController,
+        // curve: Interval((1 / count) * index, 1.0,
+        //     curve: Curves.fastOutSlowIn)
+        curve: Curves.fastOutSlowIn);
+    animationController.forward();
     initPlayer();
     super.initState();
   }
@@ -92,6 +105,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
+    animationController.dispose();
     player.dispose();
     super.dispose();
   }
@@ -117,57 +131,70 @@ class _HomePageState extends State<HomePage> {
         ),
         body: Column(
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                "תפילת הדרך",
-                style: Theme.of(context).textTheme.titleLarge,
+            Transform(
+              transform: Matrix4.translationValues(
+                  0, (1.0 - animation.value) * slide[0], 0),
+              child: Container(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  "תפילת הדרך",
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
               ),
             ),
             Expanded(
               child: SingleChildScrollView(
                 child: Container(
                   padding: EdgeInsets.all(16),
-                  child: Text(
-                    prayerParameters.returnToday == ReturnToday.returnToday
-                        ? ashkenaz_returnToday
-                        : ashkenaz_notReturnToday,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                  child: Transform(
+                    transform: Matrix4.translationValues(
+                        0, (1.0 - animation.value) * slide[1], 0),
+                    child: Text(
+                      prayerParameters.returnToday == ReturnToday.returnToday
+                          ? ashkenaz_returnToday
+                          : ashkenaz_notReturnToday,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                const Text(
-                  "חוזרים היום?",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+            // ),
+            Transform(
+              transform: Matrix4.translationValues(
+                  0, (1.0 - animation.value) * slide[2], 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  const Text(
+                    "חוזרים היום?",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Switch(
-                    value:
-                        prayerParameters.returnToday == ReturnToday.returnToday,
-                    onChanged: (value) async {
-                      setState(() {
-                        if (value) {
-                          prayerParameters.returnToday =
-                              ReturnToday.returnToday;
-                        } else {
-                          prayerParameters.returnToday =
-                              ReturnToday.notReturnToday;
-                        }
-                      });
-                    }),
-              ],
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Switch(
+                      value: prayerParameters.returnToday ==
+                          ReturnToday.returnToday,
+                      onChanged: (value) async {
+                        setState(() {
+                          if (value) {
+                            prayerParameters.returnToday =
+                                ReturnToday.returnToday;
+                          } else {
+                            prayerParameters.returnToday =
+                                ReturnToday.notReturnToday;
+                          }
+                        });
+                      }),
+                ],
+              ),
             ),
             Container(
               padding: EdgeInsets.all(16),
@@ -175,35 +202,6 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // alarmExists
-                  //     ? ElevatedButton(
-                  //         onPressed: () async {
-                  //           bool success = await Alarm.stop(Constants.alarmId);
-                  //           if (success) {
-                  //             setState(() {
-                  //               alarmExists = false;
-                  //             });
-                  //           }
-                  //           if (mounted) {
-                  //             if (success) {
-                  //               ScaffoldMessenger.of(context).showSnackBar(
-                  //                   const SnackBar(
-                  //                       content: Text("השמעה בוטלה בהצלחה")));
-                  //             } else {
-                  //               ScaffoldMessenger.of(context).showSnackBar(
-                  //                   const SnackBar(
-                  //                       content: Text("ביטול השמעה נכשל")));
-                  //             }
-                  //           }
-                  //         },
-                  //         child: Text('לבטל תפילה'),
-                  //         // style: ButtonStyle(
-                  //         //   backgroundColor: MaterialStateProperty.all(
-                  //         //       AppTheme.lightTheme().primaryColor),
-                  //         //   foregroundColor: MaterialStateProperty.all(Colors.white),
-                  //         // ),
-                  //       )
-                  //     : const SizedBox.shrink(),
                   Consumer<AppModelNotifier>(
                     builder: (context, appModel, child) {
                       return ElevatedButton(
@@ -212,11 +210,6 @@ class _HomePageState extends State<HomePage> {
                           isPlaying ? stop() : readAloud(appModel.getVoice());
                         },
                         child: isPlaying ? Text("לעצור") : Text('להשמיע עכשיו'),
-                        // style: ButtonStyle(
-                        //   backgroundColor: MaterialStateProperty.all(
-                        //       AppTheme.lightTheme().primaryColor),
-                        //   foregroundColor: MaterialStateProperty.all(Colors.white),
-                        // ),
                       );
                     },
                   ),
@@ -246,13 +239,7 @@ class _HomePageState extends State<HomePage> {
                                   Theme.of(context).colorScheme.error,
                               foregroundColor:
                                   Theme.of(context).colorScheme.onError),
-
                           child: Text('לבטל תפילה'),
-                          // style: ButtonStyle(
-                          //   backgroundColor: MaterialStateProperty.all(
-                          //       AppTheme.lightTheme().primaryColor),
-                          //   foregroundColor: MaterialStateProperty.all(Colors.white),
-                          // ),
                         )
                       : ElevatedButton(
                           onPressed: () async {
@@ -272,8 +259,6 @@ class _HomePageState extends State<HomePage> {
                             print(parameters);
                             String filename =
                                 "${parameters.prayerType.name}-${parameters.voiceType.name}-${parameters.returnToday.name}.mp3";
-                            //TODO use parameters to set alarm
-                            //TODO need option to cancel
                             final alarmSettings = AlarmSettings(
                               id: Constants.alarmId,
                               dateTime: DateTime.now().add(parameters.time),
@@ -298,11 +283,6 @@ class _HomePageState extends State<HomePage> {
                             }
                           },
                           child: Text('להשמיע עוד מעט'),
-                          // style: ButtonStyle(
-                          //   backgroundColor: MaterialStateProperty.all(
-                          //       AppTheme.lightTheme().primaryColor),
-                          //   foregroundColor: MaterialStateProperty.all(Colors.white),
-                          // ),
                         ),
                 ],
               ),
