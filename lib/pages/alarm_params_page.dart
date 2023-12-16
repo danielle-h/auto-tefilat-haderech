@@ -10,7 +10,8 @@ class AlarmParametersPage extends StatefulWidget {
   State<AlarmParametersPage> createState() => _AlarmParametersPageState();
 }
 
-class _AlarmParametersPageState extends State<AlarmParametersPage> {
+class _AlarmParametersPageState extends State<AlarmParametersPage>
+    with TickerProviderStateMixin {
   int numMinutes = 5;
   static const double spaceAbove = 20;
   static const double spaceBetween = 10;
@@ -20,6 +21,27 @@ class _AlarmParametersPageState extends State<AlarmParametersPage> {
   ReturnToday returnToday = ReturnToday.returnToday;
   bool maxVolume = true;
   bool vibrate = false;
+
+  //animation
+  late AnimationController animationController;
+  late Animation<double> animation;
+  List<double> slide = [10, 30, 50, 90];
+
+  @override
+  void initState() {
+    animationController = AnimationController(
+        duration: const Duration(milliseconds: 1000), vsync: this);
+    animation = CurvedAnimation(
+        parent: animationController, curve: Curves.fastOutSlowIn);
+    animationController.forward();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,23 +59,32 @@ class _AlarmParametersPageState extends State<AlarmParametersPage> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  const SizedBox(
-                    height: spaceAbove,
-                  ),
-                  Text("עוד כמה זמן?"),
-                  const SizedBox(
-                    height: spaceBetween,
-                  ),
-                  //when to set the alarm
-                  SizedBox(
-                    height: 60,
-                    child: CupertinoPicker(
-                        onSelectedItemChanged: (newNum) {
-                          numMinutes = newNum;
-                        },
-                        itemExtent: 30,
-                        children: List.generate(
-                            24, (index) => Text("${(index + 1) * 5} דקות"))),
+                  Transform(
+                    transform: Matrix4.translationValues(
+                        0, (1.0 - animation.value) * slide[0], 0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(
+                          height: spaceAbove,
+                        ),
+                        const Text("עוד כמה זמן?"),
+                        const SizedBox(
+                          height: spaceBetween,
+                        ),
+                        //when to set the alarm
+                        SizedBox(
+                          height: 60,
+                          child: CupertinoPicker(
+                              onSelectedItemChanged: (newNum) {
+                                numMinutes = newNum;
+                              },
+                              itemExtent: 30,
+                              children: List.generate(24,
+                                  (index) => Text("${(index + 1) * 5} דקות"))),
+                        ),
+                      ],
+                    ),
                   ),
                   // const SizedBox(
                   //   height: spaceAbove,
@@ -73,65 +104,93 @@ class _AlarmParametersPageState extends State<AlarmParametersPage> {
                   //       DropdownMenuEntry<PrayerType>(
                   //           value: PrayerType.sepharad, label: "ספרד")
                   //     ]),
-                  const SizedBox(
-                    height: spaceAbove,
+                  Transform(
+                    transform: Matrix4.translationValues(
+                        0, (1.0 - animation.value) * slide[1], 0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(
+                          height: spaceAbove,
+                        ),
+                        const Text("איזה קול?"),
+                        const SizedBox(
+                          height: spaceBetween,
+                        ),
+                        //which voice
+                        DropdownMenu(
+                            onSelected: (value) {
+                              voiceType = value ?? voiceType;
+                            },
+                            initialSelection: voiceType,
+                            dropdownMenuEntries: const [
+                              DropdownMenuEntry<VoiceType>(
+                                  value: VoiceType.female,
+                                  label: Constants.femaleName),
+                              DropdownMenuEntry<VoiceType>(
+                                  value: VoiceType.male,
+                                  label: Constants.maleName),
+                              DropdownMenuEntry<VoiceType>(
+                                  value: VoiceType.custom,
+                                  label: Constants.customName)
+                            ]),
+                      ],
+                    ),
                   ),
-                  Text("איזה קול?"),
-                  const SizedBox(
-                    height: spaceBetween,
-                  ),
-                  //which voice
-                  DropdownMenu(
-                      onSelected: (value) {
-                        voiceType = value ?? voiceType;
-                      },
-                      initialSelection: voiceType,
-                      dropdownMenuEntries: const [
-                        DropdownMenuEntry<VoiceType>(
-                            value: VoiceType.female,
-                            label: Constants.femaleName),
-                        DropdownMenuEntry<VoiceType>(
-                            value: VoiceType.male, label: Constants.maleName),
-                        DropdownMenuEntry<VoiceType>(
-                            value: VoiceType.custom,
-                            label: Constants.customName)
-                      ]),
                   //return today?
-                  const SizedBox(
-                    height: spaceAbove,
+                  Transform(
+                    transform: Matrix4.translationValues(
+                        0, (1.0 - animation.value) * slide[2], 0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(
+                          height: spaceAbove,
+                        ),
+                        const Text("חוזרים היום?"),
+                        const SizedBox(
+                          height: spaceBetween,
+                        ),
+                        DropdownMenu(
+                            onSelected: (value) {
+                              returnToday = value ?? returnToday;
+                            },
+                            initialSelection: returnToday,
+                            dropdownMenuEntries: const [
+                              DropdownMenuEntry<ReturnToday>(
+                                  value: ReturnToday.returnToday,
+                                  label: "חוזרים היום"),
+                              DropdownMenuEntry<ReturnToday>(
+                                  value: ReturnToday.notReturnToday,
+                                  label: "לא חוזרים היום")
+                            ]),
+                      ],
+                    ),
                   ),
-                  Text("חוזרים היום?"),
-                  const SizedBox(
-                    height: spaceBetween,
+                  //maximum volume?
+                  Transform(
+                    transform: Matrix4.translationValues(
+                        0, (1.0 - animation.value) * slide[3], 0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(
+                          height: spaceAbove,
+                        ),
+                        const Text("ווליום מקסימלי?"),
+                        const SizedBox(
+                          height: spaceBetween,
+                        ),
+                        Switch(
+                            value: maxVolume,
+                            onChanged: (value) {
+                              setState(() {
+                                maxVolume = value;
+                              });
+                            }),
+                      ],
+                    ),
                   ),
-                  DropdownMenu(
-                      onSelected: (value) {
-                        returnToday = value ?? returnToday;
-                      },
-                      initialSelection: returnToday,
-                      dropdownMenuEntries: const [
-                        DropdownMenuEntry<ReturnToday>(
-                            value: ReturnToday.returnToday,
-                            label: "חוזרים היום"),
-                        DropdownMenuEntry<ReturnToday>(
-                            value: ReturnToday.notReturnToday,
-                            label: "לא חוזרים היום")
-                      ]),
-                  const SizedBox(
-                    height: spaceAbove,
-                  ),
-                  const Text("ווליום מקסימלי?"),
-                  const SizedBox(
-                    height: spaceBetween,
-                  ),
-
-                  Switch(
-                      value: maxVolume,
-                      onChanged: (value) {
-                        setState(() {
-                          maxVolume = value;
-                        });
-                      }),
                   const SizedBox(
                     height: spaceAbove,
                   ),
