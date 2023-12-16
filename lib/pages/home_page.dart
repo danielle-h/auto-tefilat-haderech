@@ -117,11 +117,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           title: Text('תפילת הדרך-אשכנז'),
           actions: [
             IconButton(
-              onPressed: () {
-                Navigator.push(
+              onPressed: () async {
+                await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => SettingsPage()),
                 );
+                animationController.value = 0;
+                animationController.forward();
               },
               icon: Icon(Icons.settings),
             ),
