@@ -80,7 +80,7 @@ class _AlarmParametersPageState extends State<AlarmParametersPage>
                                 height: 60,
                                 child: CupertinoPicker(
                                     onSelectedItemChanged: (newNum) {
-                                      numMinutes = newNum;
+                                      numMinutes = (newNum + 1) * 5;
                                     },
                                     itemExtent: 30,
                                     children: List.generate(
