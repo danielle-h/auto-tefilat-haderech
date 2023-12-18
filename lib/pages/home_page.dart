@@ -6,6 +6,7 @@ import 'package:tefilat_haderech/model/app_model_notifier.dart';
 import 'package:tefilat_haderech/pages/alarm_params_page.dart';
 import 'package:tefilat_haderech/model/prayer_parameters.dart';
 import 'package:tefilat_haderech/pages/settings_page.dart';
+import 'package:tefilat_haderech/styles.dart';
 
 import '../constants.dart';
 
@@ -37,13 +38,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    final appModel = Provider.of<AppModelProvider>(context, listen: false);
+    appModel.initModel();
+
     animationController = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
     animation = CurvedAnimation(
         parent: animationController, curve: Curves.fastOutSlowIn);
-    animationController.forward();
+
+    startAnimation();
     initPlayer();
     super.initState();
+  }
+
+  void startAnimation() {
+    animationController.value = 0;
+    animationController.forward();
   }
 
   Future<void> initPlayer() async {
@@ -110,6 +120,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    AppModelProvider appModel = Provider.of<AppModelProvider>(context);
+    print("rebuilding home");
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -122,8 +134,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   context,
                   MaterialPageRoute(builder: (context) => SettingsPage()),
                 );
-                animationController.value = 0;
-                animationController.forward();
+                startAnimation();
               },
               icon: Icon(Icons.settings),
             ),
@@ -131,87 +142,103 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
         body: Column(
           children: <Widget>[
-            Transform(
-              transform: Matrix4.translationValues(
-                  0, (1.0 - animation.value) * slide[0], 0),
-              child: Container(
-                padding: EdgeInsets.all(16),
-                child: Text(
-                  "תפילת הדרך",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-            ),
+            // AnimatedBuilder(
+            //     animation: animation,
+            //     builder: (context, child) {
+            //       return Transform(
+            //         transform: Matrix4.translationValues(
+            //             0, (1.0 - animation.value) * slide[0], 0),
+            //         child: Container(
+            //           padding: EdgeInsets.all(16),
+            //           child: Text(
+            //             "תפילת הדרך",
+            //             style: Theme.of(context).textTheme.titleLarge,
+            //           ),
+            //         ),
+            //       );
+            //     }),
             Expanded(
               child: SingleChildScrollView(
                 child: Container(
-                  padding: EdgeInsets.all(16),
-                  child: Transform(
-                    transform: Matrix4.translationValues(
-                        0, (1.0 - animation.value) * slide[1], 0),
-                    child: Text(
-                      prayerParameters.returnToday == ReturnToday.returnToday
-                          ? ashkenaz_returnToday
-                          : ashkenaz_notReturnToday,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                  padding: const EdgeInsets.all(16),
+                  child: AnimatedBuilder(
+                      animation: animation,
+                      builder: (context, child) {
+                        return Transform(
+                          transform: Matrix4.translationValues(
+                              0, (1.0 - animation.value) * slide[1], 0),
+                          child: Text(
+                            prayerParameters.returnToday ==
+                                    ReturnToday.returnToday
+                                ? ashkenaz_returnToday
+                                : ashkenaz_notReturnToday,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        );
+                      }),
                 ),
               ),
             ),
             // ),
-            Transform(
-              transform: Matrix4.translationValues(
-                  0, (1.0 - animation.value) * slide[2], 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  const Text(
-                    "חוזרים היום?",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+            AnimatedBuilder(
+                animation: animation,
+                builder: (context, child) {
+                  return Transform(
+                    transform: Matrix4.translationValues(
+                        0, (1.0 - animation.value) * slide[2], 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        const Text(
+                          "חוזרים היום?",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Switch(
+                            value: prayerParameters.returnToday ==
+                                ReturnToday.returnToday,
+                            onChanged: (value) async {
+                              setState(() {
+                                if (value) {
+                                  prayerParameters.returnToday =
+                                      ReturnToday.returnToday;
+                                } else {
+                                  prayerParameters.returnToday =
+                                      ReturnToday.notReturnToday;
+                                }
+                              });
+                            }),
+                      ],
                     ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Switch(
-                      value: prayerParameters.returnToday ==
-                          ReturnToday.returnToday,
-                      onChanged: (value) async {
-                        setState(() {
-                          if (value) {
-                            prayerParameters.returnToday =
-                                ReturnToday.returnToday;
-                          } else {
-                            prayerParameters.returnToday =
-                                ReturnToday.notReturnToday;
-                          }
-                        });
-                      }),
-                ],
-              ),
-            ),
+                  );
+                }),
             Container(
               padding: EdgeInsets.all(16),
               width: double.infinity,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Consumer<AppModelNotifier>(
-                    builder: (context, appModel, child) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          print("onpressed: ${appModel.getVoice()}");
-                          isPlaying ? stop() : readAloud(appModel.getVoice());
-                        },
-                        child: isPlaying ? Text("לעצור") : Text('להשמיע עכשיו'),
-                      );
+                  ElevatedButton(
+                    onPressed: () {
+                      print("onpressed: ${appModel.getVoice()}");
+                      isPlaying ? stop() : readAloud(appModel.getVoice());
                     },
+                    child: isPlaying ? Text("לעצור") : Text('להשמיע עכשיו'),
+                    style: isPlaying
+                        ? ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.secondary,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.onSecondary)
+                        : ElevatedButton.styleFrom(),
                   ),
                   alarmExists
                       ? ElevatedButton(
@@ -248,8 +275,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         AlarmParametersPage()));
-                            animationController.value = 0;
-                            animationController.forward();
+                            startAnimation();
                             if (parameters == null) {
                               if (mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(

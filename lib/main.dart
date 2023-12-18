@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tefilat_haderech/constants.dart';
 import 'package:tefilat_haderech/model/app_model_notifier.dart';
-import 'package:tefilat_haderech/styles.dart';
 
 import 'pages/home_page.dart';
 
@@ -11,7 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Alarm.init();
   runApp(ChangeNotifierProvider(
-      create: (context) => AppModelNotifier(), child: const MyApp()));
+      create: (context) => AppModelProvider(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -20,12 +19,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final appModelNotifier = Provider.of<AppModelNotifier>(context);
-    appModelNotifier.initModel();
+    final appModel = Provider.of<AppModelProvider>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'תפילת הדרך',
-      theme: appModelNotifier.getTheme(),
+      theme: appModel.getTheme(),
       home: Directionality(
           textDirection: TextDirection.rtl,
           child: //FutureBuilder<SharedPreferences>(
@@ -51,4 +49,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

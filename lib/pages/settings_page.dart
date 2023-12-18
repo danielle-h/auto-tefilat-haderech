@@ -19,19 +19,22 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  late AppModelNotifier appModelNotifier =
-      Provider.of<AppModelNotifier>(context, listen: false);
-//  late SharedPreferences prefs;
+  // late AppModelProvider appModelNotifier =
+  //     Provider.of<AppModelProvider>(context, listen: false);
+  // String chosenVoice = "";
+  //  late SharedPreferences prefs;
 
-  @override
-  void initState() {
-    //loadPrefs();
-
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   //loadPrefs();
+  //   // chosenVoice = Util.voiceType2String(appModelNotifier.getVoice());
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
+    AppModelProvider appModel = Provider.of<AppModelProvider>(context);
+    print("settings appmodel voice: ${appModel.getVoice()}");
     return SafeArea(
         child: Directionality(
       textDirection: TextDirection.rtl,
@@ -45,14 +48,20 @@ class _SettingsPageState extends State<SettingsPage> {
               tiles: <SettingsTile>[
                 SettingsTile(
                   title: Text("קול"),
-                  value: Consumer<AppModelNotifier>(
-                    builder: (context, appModel, child) {
-                      if (appModel.getVoice() != VoiceType.custom) {
-                        return Text(Util.voiceType2String(appModel.getVoice()));
-                      }
-                      return Text(appModel.getFilename());
-                    },
-                  ),
+                  value: Text(Util.voiceType2String(appModel.getVoice())),
+                  // value: Text(Util.voiceType2String(
+                  //     Provider.of<AppModelNotifier>(context).getVoice())),
+                  // value: Consumer<AppModelNotifier>(
+                  //   builder: (context, appModel, child) {
+                  //     print("in settings ${appModel.getVoice()}");
+                  //     if (appModel.getVoice() != VoiceType.custom) {
+                  //       return Text(Util.voiceType2String(appModel.getVoice()));
+                  //     }
+                  //     return Text(appModel.getFilename());
+                  //   },
+                  // ),
+                  // value:
+                  //     Text(Util.voiceType2String(appModelNotifier.getVoice())),
                   leading: Icon(Icons.record_voice_over),
                   onPressed: (context) async {
                     String? newVoice = await showDialog<String>(
@@ -65,6 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               children: [
                                 SimpleDialogOption(
                                   onPressed: () {
+                                    print("chose female");
                                     Navigator.pop(
                                         context, Constants.femaleName);
                                   },
@@ -76,15 +86,14 @@ class _SettingsPageState extends State<SettingsPage> {
                                   },
                                   child: const Text(Constants.maleName),
                                 ),
-                                appModelNotifier.getFilename().isEmpty
+                                appModel.getFilename().isEmpty
                                     ? const SizedBox.shrink()
                                     : SimpleDialogOption(
                                         onPressed: () {
-                                          Navigator.pop(context,
-                                              appModelNotifier.getFilename());
+                                          Navigator.pop(
+                                              context, appModel.getFilename());
                                         },
-                                        child: Text(
-                                            appModelNotifier.getFilename()),
+                                        child: Text(appModel.getFilename()),
                                       ),
                                 SimpleDialogOption(
                                   onPressed: () async {
@@ -104,8 +113,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                                       print(
                                           "files: ${file.name} ${cachedFile.path}");
-                                      appModelNotifier
-                                          .updateFilename(file.name);
+                                      appModel.updateFilename(file.name);
                                     }
                                     if (mounted) {
                                       Navigator.pop(context, null);
@@ -120,20 +128,20 @@ class _SettingsPageState extends State<SettingsPage> {
                     print("settings: $newVoice");
                     if (newVoice != null) {
                       VoiceType voiceType = Util.string2VoiceType(newVoice);
-                      appModelNotifier.updateVoice(voiceType);
+                      print("settings: $voiceType");
+                      appModel.updateVoice(voiceType);
                       if (voiceType == VoiceType.custom) {
-                        appModelNotifier.updateFilename(newVoice);
+                        appModel.updateFilename(newVoice);
                       }
                     }
                   },
                 ),
                 SettingsTile.switchTile(
                   onToggle: (value) {
-                    appModelNotifier.toggleTheme();
+                    appModel.toggleTheme();
                   },
                   //enabled: false,
-                  initialValue:
-                      appModelNotifier.getTheme() == AppTheme.darkTheme(),
+                  initialValue: appModel.getTheme() == AppTheme.darkTheme(),
 
                   leading: Icon(Icons.format_paint),
                   title: Text('מצב כהה'),
