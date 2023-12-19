@@ -9,7 +9,8 @@ import 'package:tefilat_haderech/constants.dart';
 import 'package:tefilat_haderech/model/app_model_notifier.dart';
 import 'package:tefilat_haderech/styles.dart';
 import 'package:uri_to_file/uri_to_file.dart';
-import 'package:url_launcher/link.dart';
+
+import 'widgets/app_dialog.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -19,18 +20,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  // late AppModelProvider appModelNotifier =
-  //     Provider.of<AppModelProvider>(context, listen: false);
-  // String chosenVoice = "";
-  //  late SharedPreferences prefs;
-
-  // @override
-  // void initState() {
-  //   //loadPrefs();
-  //   // chosenVoice = Util.voiceType2String(appModelNotifier.getVoice());
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     AppModelProvider appModel = Provider.of<AppModelProvider>(context);
@@ -46,24 +35,15 @@ class _SettingsPageState extends State<SettingsPage> {
           sections: [
             SettingsSection(
               tiles: <SettingsTile>[
+                //which voice?
                 SettingsTile(
-                  title: Text("קול"),
-                  value: Text(Util.voiceType2String(appModel.getVoice())),
-                  // value: Text(Util.voiceType2String(
-                  //     Provider.of<AppModelNotifier>(context).getVoice())),
-                  // value: Consumer<AppModelNotifier>(
-                  //   builder: (context, appModel, child) {
-                  //     print("in settings ${appModel.getVoice()}");
-                  //     if (appModel.getVoice() != VoiceType.custom) {
-                  //       return Text(Util.voiceType2String(appModel.getVoice()));
-                  //     }
-                  //     return Text(appModel.getFilename());
-                  //   },
-                  // ),
-                  // value:
-                  //     Text(Util.voiceType2String(appModelNotifier.getVoice())),
-                  leading: Icon(Icons.record_voice_over),
+                  title: const Text("קול"),
+                  value: Text(appModel.getVoice() == VoiceType.custom
+                      ? appModel.getFilename()
+                      : Util.voiceType2String(appModel.getVoice())),
+                  leading: const Icon(Icons.record_voice_over),
                   onPressed: (context) async {
+                    //open dialog to choose voice
                     String? newVoice = await showDialog<String>(
                         context: context,
                         builder: (context) {
@@ -72,6 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             child: SimpleDialog(
                               title: Text("איזה קול?"),
                               children: [
+                                //female
                                 SimpleDialogOption(
                                   onPressed: () {
                                     print("chose female");
@@ -80,12 +61,14 @@ class _SettingsPageState extends State<SettingsPage> {
                                   },
                                   child: const Text(Constants.femaleName),
                                 ),
+                                //male
                                 SimpleDialogOption(
                                   onPressed: () {
                                     Navigator.pop(context, Constants.maleName);
                                   },
                                   child: const Text(Constants.maleName),
                                 ),
+                                //custom filename if exists
                                 appModel.getFilename().isEmpty
                                     ? const SizedBox.shrink()
                                     : SimpleDialogOption(
@@ -95,6 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                         },
                                         child: Text(appModel.getFilename()),
                                       ),
+                                //Choose new file and copy to app directory
                                 SimpleDialogOption(
                                   onPressed: () async {
                                     FilePickerResult? result = await FilePicker
@@ -114,7 +98,12 @@ class _SettingsPageState extends State<SettingsPage> {
                                       print(
                                           "files: ${file.name} ${cachedFile.path}");
                                       appModel.updateFilename(file.name);
+                                      if (mounted) {
+                                        Navigator.pop(context, file.name);
+                                      }
+                                      return;
                                     }
+                                    //if canceled return null
                                     if (mounted) {
                                       Navigator.pop(context, null);
                                     }
@@ -126,29 +115,28 @@ class _SettingsPageState extends State<SettingsPage> {
                           );
                         });
                     print("settings: $newVoice");
+                    //update voicetype
                     if (newVoice != null) {
                       VoiceType voiceType = Util.string2VoiceType(newVoice);
                       print("settings: $voiceType");
                       appModel.updateVoice(voiceType);
-                      if (voiceType == VoiceType.custom) {
-                        appModel.updateFilename(newVoice);
-                      }
                     }
                   },
                 ),
+                //dark or light mode
                 SettingsTile.switchTile(
                   onToggle: (value) {
                     appModel.toggleTheme();
                   },
-                  //enabled: false,
                   initialValue: appModel.getTheme() == AppTheme.darkTheme(),
-
-                  leading: Icon(Icons.format_paint),
-                  title: Text('מצב כהה'),
+                  leading: const Icon(Icons.format_paint),
+                  title: const Text('מצב כהה'),
                 ),
-                SettingsTile.navigation(
+                //about app
+                SettingsTile(
                     leading: const Icon(Icons.question_mark),
                     onPressed: (context) {
+                      //not using aboutdialog because of directionality
                       showDialog(
                           context: context,
                           builder: ((context) {
@@ -156,81 +144,10 @@ class _SettingsPageState extends State<SettingsPage> {
                             String version = "1.0.0"; //TODO package_info_plus
                             String copyright =
                                 "כל הזכויות שמורות לדניאל הוניגשטיין 2023";
-                            return Directionality(
-                              textDirection: TextDirection.rtl,
-                              child: AlertDialog(
-                                actions: [
-                                  TextButton(
-                                      onPressed: () {
-                                        showLicensePage(context: context);
-                                      },
-                                      child: Text("כל הרשיונות")),
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text("סיימתי")),
-                                ],
-                                title: Text(
-                                  "$appName $version",
-                                  textAlign: TextAlign.center,
-                                ),
-                                content: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(copyright),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      const Text(
-                                          "האפליקציה משמיעה את תפילת הדרך בזמן שאתם קובעים."),
-                                      const Text(
-                                          "אתם יכולים גם להעלות הקלטה שלכם."),
-                                      const Text(
-                                          "האפליקציה חינמית והקוד שלה פתוח:"),
-                                      Link(
-                                          uri: Uri.parse(
-                                              "https://github.com/danielle-h/auto-tefilat-haderech"),
-                                          target: LinkTarget.defaultTarget,
-                                          builder: (BuildContext ctx,
-                                              FollowLink? openLink) {
-                                            return TextButton(
-                                                onPressed: openLink,
-                                                child: Text("צפו בקוד"));
-                                          }),
-                                      const Text(
-                                          "יש עוד דברים מעניינים באתר שלי"),
-                                      Link(
-                                          uri: Uri.parse(
-                                              "https://danielle-honig.com/"),
-                                          target: LinkTarget.defaultTarget,
-                                          builder: (BuildContext ctx,
-                                              FollowLink? openLink) {
-                                            return TextButton(
-                                                onPressed: openLink,
-                                                child: Text("אתר שלי"));
-                                          }),
-                                      const Text(
-                                          "אם אהבתם מוזמנים לקנות לי שוקו: (אני לא אוהבת קפה ;) )"),
-                                      Link(
-                                          uri: Uri.parse(
-                                              "https://www.buymeacoffee.com/369wkrttu6"),
-                                          target: LinkTarget.defaultTarget,
-                                          builder: (BuildContext ctx,
-                                              FollowLink? openLink) {
-                                            return TextButton(
-                                                onPressed: openLink,
-                                                child: Text("קנו לי שוקו"));
-                                          }),
-                                      Text(
-                                        "תודה רבה!",
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ]),
-                              ),
-                            );
+                            return AppDialog(
+                                appName: appName,
+                                version: version,
+                                copyright: copyright);
                           }));
                     },
                     value: Text("גרסה 1.0.0"),
