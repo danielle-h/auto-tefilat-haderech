@@ -28,11 +28,14 @@ class AppModelProvider extends ChangeNotifier {
       _appTheme = (prefs.getBool(Constants.isDarkTheme) ?? false)
           ? AppTheme.darkTheme()
           : AppTheme.lightTheme();
-      _appVoice = (Util.string2VoiceType(
-          prefs.getString(Constants.voiceType) ?? VoiceType.female.name));
+      _appVoice = VoiceType.values.firstWhere((element) =>
+          element.name == (prefs.getString(Constants.voiceType) ?? "female"));
+      print("appmodel $_appVoice");
       _filename = prefs.getString(Constants.filename) ?? "";
       print("initModel");
       notifyListeners();
+
+      print("initmodel original ${prefs.getString(Constants.voiceType)}");
     }
   }
 
@@ -59,6 +62,7 @@ class AppModelProvider extends ChangeNotifier {
     SharedPreferences.getInstance().then(
       (prefs) {
         prefs.setString(Constants.voiceType, _appVoice.name);
+        print("appmodel saving $_appVoice");
       },
     );
   }
