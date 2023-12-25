@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -20,6 +21,21 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  String appVersion = "";
+
+  @override
+  void initState() {
+    getPackageInfo();
+    super.initState();
+  }
+
+  Future<void> getPackageInfo() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      appVersion = packageInfo.version;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     AppModelProvider appModel = Provider.of<AppModelProvider>(context);
@@ -141,16 +157,15 @@ class _SettingsPageState extends State<SettingsPage> {
                           context: context,
                           builder: ((context) {
                             String appName = "תפילת דרך אוטומטית";
-                            String version = "1.0.0"; //TODO package_info_plus
                             String copyright =
                                 "כל הזכויות שמורות לדניאל הוניגשטיין 2023";
                             return AppDialog(
                                 appName: appName,
-                                version: version,
+                                version: appVersion,
                                 copyright: copyright);
                           }));
                     },
-                    value: Text("גרסה 1.0.0"),
+                    value: Text("גרסה $appVersion"),
                     title: const Text("על האפליקציה"))
               ],
             ),

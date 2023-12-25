@@ -9,6 +9,7 @@ import 'package:tefilat_haderech/pages/settings_page.dart';
 import 'package:tefilat_haderech/styles.dart';
 
 import '../constants.dart';
+import 'widgets/animated_tile.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key, required this.prayerType});
@@ -31,10 +32,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   //texts
   final String ashkenaz_returnToday =
-      "יְהִי רָצוֹן מִלְּפָנֶיךָ יְהֹוָה אֱלֹהֵנוּ וֵאֱלֹהֵי אֲבוֹתֵינוּ, שֶׁתּוֹלִיכֵנוּ לְשָׁלוֹם וְתַצְעִידֵנוּ לְשָׁלוֹם, וְתִסְמְכֵנוּ לְשָׁלוֹם, וְתַנְחֵנוּ אֶל מְחוֹז חֶפְצֵנוּ לְחַיִּים וְלְשִּׂמְחָה ולְשָּׁלוֹם, וְתַחְזִירֵנוּ לְשָׁלוֹם וְתַצִּילֵנוּ מִכַּף כׇּל אוֹיֵב וְאוֹרֵב בַּדֶּרֶךְ וּמִכׇּל מִינֵי פֻּרְעָנֻיּוֹת הַמִּתְרַגְּשׁוֹת לָבוֹא לָעוֹלָם, וְתִשְׁלַח בְּרָכָה בְּמַעֲשֵׂה יָדֵינוּ. וְתִתְנְנוֹ לְחֵן וּלְחֶסֶד וּלְרַחֲמִים בְּעֵינֶיךָ וּבְעֵינֵי כׇּל רוֹאֵינוּ, וְתִשְׁמַע קוֹל תַּחֲנוּנֵינוּ. כִּי אֵל שׁוֹמֵעַ תְּפִלָּה וְתַחֲנוּן אַתָּה. בָּרוּךְ אַתָּה יְהֹוָה שׁוֹמֵעַ תְּפִלָּה.";
+      "יְהִי רָצוֹן מִלְּפָנֶיךָ ה' אֱלֹהֵנוּ וֵאֱלֹהֵי אֲבוֹתֵינוּ, שֶׁתּוֹלִיכֵנוּ לְשָׁלוֹם וְתַצְעִידֵנוּ לְשָׁלוֹם, וְתִסְמְכֵנוּ לְשָׁלוֹם, וְתַנְחֵנוּ אֶל מְחוֹז חֶפְצֵנוּ לְחַיִּים וְלְשִּׂמְחָה ולְשָּׁלוֹם, וְתַחְזִירֵנוּ לְשָׁלוֹם וְתַצִּילֵנוּ מִכַּף כׇּל אוֹיֵב וְאוֹרֵב בַּדֶּרֶךְ וּמִכׇּל מִינֵי פֻּרְעָנֻיּוֹת הַמִּתְרַגְּשׁוֹת לָבוֹא לָעוֹלָם, וְתִשְׁלַח בְּרָכָה בְּמַעֲשֵׂה יָדֵינוּ. וְתִתְנְנוֹ לְחֵן וּלְחֶסֶד וּלְרַחֲמִים בְּעֵינֶיךָ וּבְעֵינֵי כׇּל רוֹאֵינוּ, וְתִשְׁמַע קוֹל תַּחֲנוּנֵינוּ. כִּי אֵל שׁוֹמֵעַ תְּפִלָּה וְתַחֲנוּן אַתָּה. בָּרוּךְ אַתָּה ה' שׁוֹמֵעַ תְּפִלָּה.";
 
   final String ashkenaz_notReturnToday =
-      "יְהִי רָצוֹן מִלְּפָנֶיךָ יְהֹוָה אֱלֹהֵנוּ וֵאֱלֹהֵי אֲבוֹתֵינוּ, שֶׁתּוֹלִיכֵנוּ לְשָׁלוֹם וְתַצְעִידֵנוּ לְשָׁלוֹם, וְתִסְמְכֵנוּ לְשָׁלוֹם, וְתַנְחֵנוּ אֶל מְחוֹז חֶפְצֵנוּ לְחַיִּים וְלְשִּׂמְחָה ולְשָּׁלוֹם. וְתַצִּילֵנוּ מִכַּף כׇּל אוֹיֵב וְאוֹרֵב בַּדֶּרֶךְ וּמִכׇּל מִינֵי פֻּרְעָנֻיּוֹת הַמִּתְרַגְּשׁוֹת לָבוֹא לָעוֹלָם, וְתִשְׁלַח בְּרָכָה בְּמַעֲשֵׂה יָדֵינוּ. וְתִתְנְנוֹ לְחֵן וּלְחֶסֶד וּלְרַחֲמִים בְּעֵינֶיךָ וּבְעֵינֵי כׇּל רוֹאֵינוּ, וְתִשְׁמַע קוֹל תַּחֲנוּנֵינוּ. כִּי אֵל שׁוֹמֵעַ תְּפִלָּה וְתַחֲנוּן אַתָּה. בָּרוּךְ אַתָּה יְהֹוָה שׁוֹמֵעַ תְּפִלָּה.";
+      "יְהִי רָצוֹן מִלְּפָנֶיךָ ה' אֱלֹהֵנוּ וֵאֱלֹהֵי אֲבוֹתֵינוּ, שֶׁתּוֹלִיכֵנוּ לְשָׁלוֹם וְתַצְעִידֵנוּ לְשָׁלוֹם, וְתִסְמְכֵנוּ לְשָׁלוֹם, וְתַנְחֵנוּ אֶל מְחוֹז חֶפְצֵנוּ לְחַיִּים וְלְשִּׂמְחָה ולְשָּׁלוֹם. וְתַצִּילֵנוּ מִכַּף כׇּל אוֹיֵב וְאוֹרֵב בַּדֶּרֶךְ וּמִכׇּל מִינֵי פֻּרְעָנֻיּוֹת הַמִּתְרַגְּשׁוֹת לָבוֹא לָעוֹלָם, וְתִשְׁלַח בְּרָכָה בְּמַעֲשֵׂה יָדֵינוּ. וְתִתְנְנוֹ לְחֵן וּלְחֶסֶד וּלְרַחֲמִים בְּעֵינֶיךָ וּבְעֵינֵי כׇּל רוֹאֵינוּ, וְתִשְׁמַע קוֹל תַּחֲנוּנֵינוּ. כִּי אֵל שׁוֹמֵעַ תְּפִלָּה וְתַחֲנוּן אַתָּה. בָּרוּךְ אַתָּה ה' שׁוֹמֵעַ תְּפִלָּה.";
 
   @override
   void initState() {
@@ -161,65 +162,56 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               child: SingleChildScrollView(
                 child: Container(
                   padding: const EdgeInsets.all(16),
-                  child: AnimatedBuilder(
-                      animation: animation,
-                      builder: (context, child) {
-                        return Transform(
-                          transform: Matrix4.translationValues(
-                              0, (1.0 - animation.value) * slide[1], 0),
-                          child: Text(
-                            prayerParameters.returnToday ==
-                                    ReturnToday.returnToday
-                                ? ashkenaz_returnToday
-                                : ashkenaz_notReturnToday,
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        );
-                      }),
+                  child: AnimatedTile(
+                    animation: animation,
+                    slide: slide[1],
+                    child: Text(
+                      prayerParameters.returnToday == ReturnToday.returnToday
+                          ? ashkenaz_returnToday
+                          : ashkenaz_notReturnToday,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
             // ),
-            AnimatedBuilder(
-                animation: animation,
-                builder: (context, child) {
-                  return Transform(
-                    transform: Matrix4.translationValues(
-                        0, (1.0 - animation.value) * slide[2], 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        const Text(
-                          "חוזרים היום?",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Switch(
-                            value: prayerParameters.returnToday ==
-                                ReturnToday.returnToday,
-                            onChanged: (value) async {
-                              setState(() {
-                                if (value) {
-                                  prayerParameters.returnToday =
-                                      ReturnToday.returnToday;
-                                } else {
-                                  prayerParameters.returnToday =
-                                      ReturnToday.notReturnToday;
-                                }
-                              });
-                            }),
-                      ],
+            AnimatedTile(
+              animation: animation,
+              slide: slide[2],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  const Text(
+                    "חוזרים היום?",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
                     ),
-                  );
-                }),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Switch(
+                      value: prayerParameters.returnToday ==
+                          ReturnToday.returnToday,
+                      onChanged: (value) async {
+                        setState(() {
+                          if (value) {
+                            prayerParameters.returnToday =
+                                ReturnToday.returnToday;
+                          } else {
+                            prayerParameters.returnToday =
+                                ReturnToday.notReturnToday;
+                          }
+                        });
+                      }),
+                ],
+              ),
+            ),
             Container(
               padding: EdgeInsets.all(16),
               width: double.infinity,
