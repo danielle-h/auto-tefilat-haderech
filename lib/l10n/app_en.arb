@@ -8,5 +8,23 @@
    "recitation_canceled_fail":"Recitation not canceled",
    "cancel_recitation":"Cancel recitation",
    "recitation_not_set":"Recitation not set",
-   "recite_later":"Recite later"
+   "recite_later":"Recite later",
+   "dark_mode":"Dark mode",
+   "language": "Language",
+   "choose_language":"Choose language",
+   "version": "Version {ver}",
+   "@version": {
+      "ver": {
+        "type": "String",
+        "example": "1.0.0"
+      }
+    },
+    "about_app":"About app",
+    "settings":"Settings",
+    "voice":"Voice",
+    "which_voice":"Voice type",
+    "choose_file":"Choose file",
+    "female_name":"Danielle",
+    "male_name": "Samuel",
+    "custom_name": "My file"
 }

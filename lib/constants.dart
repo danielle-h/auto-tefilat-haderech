@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class Constants {
   //keys
   static String firstTimeUse = "firstTimeUse";
@@ -37,14 +40,14 @@ class Util {
     return VoiceType.custom;
   }
 
-  static String voiceType2String(VoiceType voice) {
+  static String voiceType2String(VoiceType voice, BuildContext context) {
     switch (voice) {
       case VoiceType.custom:
-        return Constants.customName;
+        return AppLocalizations.of(context)!.custom_name;
       case VoiceType.female:
-        return Constants.femaleName;
+        return AppLocalizations.of(context)!.female_name;
       case VoiceType.male:
-        return Constants.maleName;
+        return AppLocalizations.of(context)!.male_name;
     }
   }
 }

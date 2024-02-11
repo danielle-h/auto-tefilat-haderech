@@ -8,6 +8,26 @@
    "recitation_canceled_fail":"ביטול השמעה נכשל",
    "cancel_recitation":"לבטל תפילה",
    "recitation_not_set":"השמעה לא נקבעה",
-   "recite_later":"להשמיע עוד מעט"
-
+   "recite_later":"להשמיע עוד מעט",
+   "dark_mode":"מצב כהה",
+   "language": "שפה",
+   "choose_language":"בחירת שפה",
+   "version": "גרסה {ver}",
+   "@version": {
+      "ver": {
+        "type": "String",
+        "example": "1.0.0"
+      }
+    },
+    "about_app":"על האפליקציה",
+    "settings":"הגדרות",
+    "voice":"קול",
+    "which_voice":"איזה קול",
+    "choose_file":"לבחור קובץ",
+    "female_name":"תהילה",
+    "male_name": "שמואל",
+    "custom_name":"קובץ שלי"
 }
+
+
+

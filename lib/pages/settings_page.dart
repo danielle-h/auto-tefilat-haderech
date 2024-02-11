@@ -10,6 +10,7 @@ import 'package:tefilat_haderech/constants.dart';
 import 'package:tefilat_haderech/model/app_model_notifier.dart';
 import 'package:tefilat_haderech/styles.dart';
 import 'package:uri_to_file/uri_to_file.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'widgets/app_dialog.dart';
 
@@ -41,174 +42,173 @@ class _SettingsPageState extends State<SettingsPage> {
     AppModelProvider appModel = Provider.of<AppModelProvider>(context);
     print("settings appmodel voice: ${appModel.getVoice()}");
     return SafeArea(
-        child: Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("הגדרות"),
-        ),
-        body: SettingsList(
-          sections: [
-            SettingsSection(
-              tiles: <SettingsTile>[
-                //which voice?
-                SettingsTile(
-                  title: const Text("קול"),
-                  value: Text(appModel.getVoice() == VoiceType.custom
-                      ? appModel.getFilename()
-                      : Util.voiceType2String(appModel.getVoice())),
-                  leading: const Icon(Icons.record_voice_over),
-                  onPressed: (context) async {
-                    //open dialog to choose voice
-                    String? newVoice = await showDialog<String>(
-                        context: context,
-                        builder: (context) {
-                          return Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: SimpleDialog(
-                              title: Text("איזה קול?"),
-                              children: [
-                                //female
-                                SimpleDialogOption(
-                                  onPressed: () {
-                                    print("chose female");
-                                    Navigator.pop(
-                                        context, Constants.femaleName);
-                                  },
-                                  child: const Text(Constants.femaleName),
-                                ),
-                                //male
-                                SimpleDialogOption(
-                                  onPressed: () {
-                                    Navigator.pop(context, Constants.maleName);
-                                  },
-                                  child: const Text(Constants.maleName),
-                                ),
-                                //custom filename if exists
-                                appModel.getFilename().isEmpty
-                                    ? const SizedBox.shrink()
-                                    : SimpleDialogOption(
-                                        onPressed: () {
-                                          Navigator.pop(
-                                              context, appModel.getFilename());
-                                        },
-                                        child: Text(appModel.getFilename()),
-                                      ),
-                                //Choose new file and copy to app directory
-                                SimpleDialogOption(
-                                  onPressed: () async {
-                                    FilePickerResult? result = await FilePicker
-                                        .platform
-                                        .pickFiles(type: FileType.audio);
-                                    if (result != null) {
-                                      PlatformFile file = result.files.first;
-                                      final directory =
-                                          await getApplicationDocumentsDirectory();
-                                      print("uri: ${file.identifier}");
-                                      File pickedFile =
-                                          await toFile(file.identifier!);
-                                      print("picked file: ${pickedFile.path}");
-                                      File cachedFile = await pickedFile.copy(
-                                          "${directory.path}${Platform.pathSeparator}custom.mp3");
-
-                                      print(
-                                          "files: ${file.name} ${cachedFile.path}");
-                                      appModel.updateFilename(file.name);
-                                      if (mounted) {
-                                        Navigator.pop(context, file.name);
-                                      }
-                                      return;
-                                    }
-                                    //if canceled return null
-                                    if (mounted) {
-                                      Navigator.pop(context, null);
-                                    }
-                                  },
-                                  child: const Text("לבחור קובץ..."),
-                                )
-                              ],
+        child: Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.settings),
+      ),
+      body: SettingsList(
+        sections: [
+          SettingsSection(
+            tiles: <SettingsTile>[
+              //which voice?
+              SettingsTile(
+                title: Text(AppLocalizations.of(context)!.voice),
+                value: Text(appModel.getVoice() == VoiceType.custom
+                    ? appModel.getFilename()
+                    : Util.voiceType2String(appModel.getVoice(), context)),
+                leading: const Icon(Icons.record_voice_over),
+                onPressed: (context) async {
+                  //open dialog to choose voice
+                  String? newVoice = await showDialog<String>(
+                      context: context,
+                      builder: (context) {
+                        return SimpleDialog(
+                          title: Text(
+                              "${AppLocalizations.of(context)!.which_voice}?"),
+                          children: [
+                            //female
+                            SimpleDialogOption(
+                              onPressed: () {
+                                print("chose female");
+                                Navigator.pop(context, Constants.femaleName);
+                              },
+                              child: Text(
+                                  AppLocalizations.of(context)!.female_name),
                             ),
-                          );
-                        });
-                    print("settings: $newVoice");
-                    //update voicetype
-                    if (newVoice != null) {
-                      VoiceType voiceType = Util.string2VoiceType(newVoice);
-                      print("settings: $voiceType");
-                      appModel.updateVoice(voiceType);
-                    }
-                  },
-                ),
-                //dark or light mode
-                SettingsTile.switchTile(
-                  onToggle: (value) {
-                    appModel.toggleTheme();
-                  },
-                  initialValue: appModel.getTheme() == AppTheme.darkTheme(),
-                  leading: const Icon(Icons.format_paint),
-                  title: const Text('מצב כהה'),
-                ),
-                //language
-                SettingsTile(
-                  title: const Text("שפה"),
-                  value: Text(appLanguages[appModel.getLocale()]!),
-                  leading: const Icon(Icons.language),
-                  onPressed: (context) async {
-                    //open dialog to choose voice
-                    AppLocale? newLocale = await showDialog<AppLocale>(
+                            //male
+                            SimpleDialogOption(
+                              onPressed: () {
+                                Navigator.pop(context, Constants.maleName);
+                              },
+                              child:
+                                  Text(AppLocalizations.of(context)!.male_name),
+                            ),
+                            //custom filename if exists
+                            appModel.getFilename().isEmpty
+                                ? const SizedBox.shrink()
+                                : SimpleDialogOption(
+                                    onPressed: () {
+                                      Navigator.pop(
+                                          context, appModel.getFilename());
+                                    },
+                                    child: Text(appModel.getFilename()),
+                                  ),
+                            //Choose new file and copy to app directory
+                            SimpleDialogOption(
+                              onPressed: () async {
+                                FilePickerResult? result = await FilePicker
+                                    .platform
+                                    .pickFiles(type: FileType.audio);
+                                if (result != null) {
+                                  PlatformFile file = result.files.first;
+                                  final directory =
+                                      await getApplicationDocumentsDirectory();
+                                  print("uri: ${file.identifier}");
+                                  File pickedFile =
+                                      await toFile(file.identifier!);
+                                  print("picked file: ${pickedFile.path}");
+                                  File cachedFile = await pickedFile.copy(
+                                      "${directory.path}${Platform.pathSeparator}custom.mp3");
+
+                                  print(
+                                      "files: ${file.name} ${cachedFile.path}");
+                                  appModel.updateFilename(file.name);
+                                  if (mounted) {
+                                    Navigator.pop(context, file.name);
+                                  }
+                                  return;
+                                }
+                                //if canceled return null
+                                if (mounted) {
+                                  Navigator.pop(context, null);
+                                }
+                              },
+                              child: Text(
+                                  "${AppLocalizations.of(context)!.choose_file}..."),
+                            )
+                          ],
+                        );
+                      });
+                  print("settings: $newVoice");
+                  //update voicetype
+                  if (newVoice != null) {
+                    VoiceType voiceType = Util.string2VoiceType(newVoice);
+                    print("settings: $voiceType");
+                    appModel.updateVoice(voiceType);
+                  }
+                },
+              ),
+              //dark or light mode
+              SettingsTile.switchTile(
+                onToggle: (value) {
+                  appModel.toggleTheme();
+                },
+                initialValue: appModel.getTheme() == AppTheme.darkTheme(),
+                leading: const Icon(Icons.format_paint),
+                title: Text(AppLocalizations.of(context)!.dark_mode),
+              ),
+              //language
+              SettingsTile(
+                title: Text(AppLocalizations.of(context)!.language),
+                value: Text(appLanguages[appModel.getLocale()]!),
+                leading: const Icon(Icons.language),
+                onPressed: (context) async {
+                  //open dialog to choose voice
+                  AppLocale? newLocale = await showDialog<AppLocale>(
+                      context: context,
+                      builder: (context) {
+                        return SimpleDialog(
+                          title: Text(
+                              AppLocalizations.of(context)!.choose_language),
+                          children: [
+                            //English
+                            SimpleDialogOption(
+                              onPressed: () {
+                                print("chose english");
+                                Navigator.pop(context, AppLocale.en);
+                              },
+                              child: const Text("English"),
+                            ),
+                            //Hebrew
+                            SimpleDialogOption(
+                              onPressed: () {
+                                Navigator.pop(context, AppLocale.he);
+                              },
+                              child: const Text("עברית"),
+                            ),
+                          ],
+                        );
+                      });
+                  print("settings: $newLocale");
+                  //update voicetype
+                  if (newLocale != null) {
+                    appModel.updateLocale(newLocale);
+                  }
+                },
+              ),
+              //about app
+              SettingsTile(
+                  leading: const Icon(Icons.question_mark),
+                  onPressed: (context) {
+                    //not using aboutdialog because of directionality
+                    showDialog(
                         context: context,
-                        builder: (context) {
-                          return SimpleDialog(
-                            title: Text("בחירת שפה"),
-                            children: [
-                              //English
-                              SimpleDialogOption(
-                                onPressed: () {
-                                  print("chose english");
-                                  Navigator.pop(context, AppLocale.en);
-                                },
-                                child: const Text("English"),
-                              ),
-                              //Hebrew
-                              SimpleDialogOption(
-                                onPressed: () {
-                                  Navigator.pop(context, AppLocale.he);
-                                },
-                                child: const Text("עברית"),
-                              ),
-                            ],
-                          );
-                        });
-                    print("settings: $newLocale");
-                    //update voicetype
-                    if (newLocale != null) {
-                      appModel.updateLocale(newLocale);
-                    }
+                        builder: ((context) {
+                          String appName = "תפילת דרך אוטומטית";
+                          String copyright =
+                              "כל הזכויות שמורות לדניאל הוניגשטיין 2023";
+                          return AppDialog(
+                              appName: appName,
+                              version: appVersion,
+                              copyright: copyright);
+                        }));
                   },
-                ),
-                //about app
-                SettingsTile(
-                    leading: const Icon(Icons.question_mark),
-                    onPressed: (context) {
-                      //not using aboutdialog because of directionality
-                      showDialog(
-                          context: context,
-                          builder: ((context) {
-                            String appName = "תפילת דרך אוטומטית";
-                            String copyright =
-                                "כל הזכויות שמורות לדניאל הוניגשטיין 2023";
-                            return AppDialog(
-                                appName: appName,
-                                version: appVersion,
-                                copyright: copyright);
-                          }));
-                    },
-                    value: Text("גרסה $appVersion"),
-                    title: const Text("על האפליקציה"))
-              ],
-            ),
-          ],
-        ),
+                  value:
+                      Text(AppLocalizations.of(context)!.version(appVersion)),
+                  title: Text(AppLocalizations.of(context)!.about_app))
+            ],
+          ),
+        ],
       ),
     ));
   }

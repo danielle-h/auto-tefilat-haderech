@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:tefilat_haderech/constants.dart';
 import 'package:tefilat_haderech/model/prayer_parameters.dart';
 import 'package:tefilat_haderech/pages/widgets/animated_tile.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class AlarmParametersPage extends StatefulWidget {
   AlarmParametersPage({super.key});
@@ -124,16 +126,16 @@ class _AlarmParametersPageState extends State<AlarmParametersPage>
                               voiceType = value ?? voiceType;
                             },
                             initialSelection: voiceType,
-                            dropdownMenuEntries: const [
+                            dropdownMenuEntries: [
                               DropdownMenuEntry<VoiceType>(
                                   value: VoiceType.female,
-                                  label: Constants.femaleName),
+                                  label: AppLocalizations.of(context)!.female_name),
                               DropdownMenuEntry<VoiceType>(
                                   value: VoiceType.male,
-                                  label: Constants.maleName),
+                                  label: AppLocalizations.of(context)!.male_name),
                               DropdownMenuEntry<VoiceType>(
                                   value: VoiceType.custom,
-                                  label: Constants.customName)
+                                  label: AppLocalizations.of(context)!.custom_name)
                             ]),
                       ],
                     ),
