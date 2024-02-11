@@ -11,6 +11,8 @@ class AppModelProvider extends ChangeNotifier {
   VoiceType _appVoice = VoiceType.female;
   //file if custom
   String _filename = "";
+  //language
+  String _locale = "he";
 
   bool initialized = false;
 
@@ -18,6 +20,7 @@ class AppModelProvider extends ChangeNotifier {
   VoiceType getVoice() => _appVoice;
   ThemeData getTheme() => _appTheme;
   String getFilename() => _filename;
+  String getLocale() => _locale;
 
   //init from sharedPrefs
   Future<void> initModel() async {
@@ -28,6 +31,7 @@ class AppModelProvider extends ChangeNotifier {
       _appTheme = (prefs.getBool(Constants.isDarkTheme) ?? false)
           ? AppTheme.darkTheme()
           : AppTheme.lightTheme();
+      _locale = (prefs.getString(Constants.locale) ?? "he");
       _appVoice = VoiceType.values.firstWhere((element) =>
           element.name == (prefs.getString(Constants.voiceType) ?? "female"));
       print("appmodel $_appVoice");
@@ -65,6 +69,16 @@ class AppModelProvider extends ChangeNotifier {
         print("appmodel saving $_appVoice");
       },
     );
+  }
+
+  void updateLocale(AppLocale newLocale) {
+    _locale = newLocale.name;
+    SharedPreferences.getInstance().then(
+      (prefs) {
+        prefs.setString(Constants.locale, _locale);
+      },
+    );
+    notifyListeners();
   }
 
   void updateFilename(String newFile) {

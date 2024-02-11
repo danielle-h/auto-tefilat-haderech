@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tefilat_haderech/constants.dart';
 import 'package:tefilat_haderech/model/app_model_notifier.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'pages/home_page.dart';
 
 void main() async {
@@ -22,29 +22,14 @@ class MyApp extends StatelessWidget {
     final appModel = Provider.of<AppModelProvider>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'תפילת הדרך',
+      onGenerateTitle: (context) {
+        return AppLocalizations.of(context)!.app_title;
+      },
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: appModel.getTheme(),
-      home: Directionality(
-          textDirection: TextDirection.rtl,
-          child: //FutureBuilder<SharedPreferences>(
-              // future: SharedPreferences.getInstance(),
-              // builder: (context, snapshot) {
-              //   if (snapshot.hasData) {
-              //     if (snapshot.data!.containsKey(Constants.firstTimeUse)) {
-              //       // Not the first time, go directly to main page
-              //       int index = snapshot.data!.getInt(Constants.prayerVersion) ?? 0;
-              //return HomePage(prayerType: PrayerType.values[index]);
-              HomePage(prayerType: PrayerType.ashkenaz)
-          //   } else {
-          //     // First time, show prayer version selection
-          //     return PrayerVersionSelection();
-          //   }
-          // } else {
-          //   // Waiting for preferences to be initialized
-          //   return const Center(child: CircularProgressIndicator());
-          // }
-          //},
-          ),
+      locale: Locale(appModel.getLocale()),
+      home: HomePage(prayerType: PrayerType.ashkenaz),
       // ),
     );
   }

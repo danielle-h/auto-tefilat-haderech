@@ -148,6 +148,44 @@ class _SettingsPageState extends State<SettingsPage> {
                   leading: const Icon(Icons.format_paint),
                   title: const Text('מצב כהה'),
                 ),
+                //language
+                SettingsTile(
+                  title: const Text("שפה"),
+                  value: Text(appLanguages[appModel.getLocale()]!),
+                  leading: const Icon(Icons.language),
+                  onPressed: (context) async {
+                    //open dialog to choose voice
+                    AppLocale? newLocale = await showDialog<AppLocale>(
+                        context: context,
+                        builder: (context) {
+                          return SimpleDialog(
+                            title: Text("בחירת שפה"),
+                            children: [
+                              //English
+                              SimpleDialogOption(
+                                onPressed: () {
+                                  print("chose english");
+                                  Navigator.pop(context, AppLocale.en);
+                                },
+                                child: const Text("English"),
+                              ),
+                              //Hebrew
+                              SimpleDialogOption(
+                                onPressed: () {
+                                  Navigator.pop(context, AppLocale.he);
+                                },
+                                child: const Text("עברית"),
+                              ),
+                            ],
+                          );
+                        });
+                    print("settings: $newLocale");
+                    //update voicetype
+                    if (newLocale != null) {
+                      appModel.updateLocale(newLocale);
+                    }
+                  },
+                ),
                 //about app
                 SettingsTile(
                     leading: const Icon(Icons.question_mark),

@@ -7,6 +7,7 @@ import 'package:tefilat_haderech/pages/alarm_params_page.dart';
 import 'package:tefilat_haderech/model/prayer_parameters.dart';
 import 'package:tefilat_haderech/pages/settings_page.dart';
 import 'package:tefilat_haderech/styles.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../constants.dart';
 import 'widgets/animated_tile.dart';
@@ -123,48 +124,49 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     AppModelProvider appModel = Provider.of<AppModelProvider>(context);
     print("rebuilding home");
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('תפילת הדרך-אשכנז'),
-          actions: [
-            IconButton(
-              onPressed: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SettingsPage()),
-                );
-                startAnimation();
-              },
-              icon: Icon(Icons.settings),
-            ),
-          ],
-        ),
-        body: Column(
-          children: <Widget>[
-            // AnimatedBuilder(
-            //     animation: animation,
-            //     builder: (context, child) {
-            //       return Transform(
-            //         transform: Matrix4.translationValues(
-            //             0, (1.0 - animation.value) * slide[0], 0),
-            //         child: Container(
-            //           padding: EdgeInsets.all(16),
-            //           child: Text(
-            //             "תפילת הדרך",
-            //             style: Theme.of(context).textTheme.titleLarge,
-            //           ),
-            //         ),
-            //       );
-            //     }),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  child: AnimatedTile(
-                    animation: animation,
-                    slide: slide[1],
+    print(appModel.getLocale());
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.home_page_title),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+              );
+              startAnimation();
+            },
+            icon: Icon(Icons.settings),
+          ),
+        ],
+      ),
+      body: Column(
+        children: <Widget>[
+          // AnimatedBuilder(
+          //     animation: animation,
+          //     builder: (context, child) {
+          //       return Transform(
+          //         transform: Matrix4.translationValues(
+          //             0, (1.0 - animation.value) * slide[0], 0),
+          //         child: Container(
+          //           padding: EdgeInsets.all(16),
+          //           child: Text(
+          //             "תפילת הדרך",
+          //             style: Theme.of(context).textTheme.titleLarge,
+          //           ),
+          //         ),
+          //       );
+          //     }),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                child: AnimatedTile(
+                  animation: animation,
+                  slide: slide[1],
+                  child: Directionality(
+                    textDirection: TextDirection.rtl,
                     child: Text(
                       prayerParameters.returnToday == ReturnToday.returnToday
                           ? ashkenaz_returnToday
@@ -178,137 +180,145 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            // ),
-            AnimatedTile(
-              animation: animation,
-              slide: slide[2],
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  const Text(
-                    "חוזרים היום?",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+          ),
+          // ),
+          AnimatedTile(
+            animation: animation,
+            slide: slide[2],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.return_today,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                   ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Switch(
-                      value: prayerParameters.returnToday ==
-                          ReturnToday.returnToday,
-                      onChanged: (value) async {
-                        setState(() {
-                          if (value) {
-                            prayerParameters.returnToday =
-                                ReturnToday.returnToday;
-                          } else {
-                            prayerParameters.returnToday =
-                                ReturnToday.notReturnToday;
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Switch(
+                    value:
+                        prayerParameters.returnToday == ReturnToday.returnToday,
+                    onChanged: (value) async {
+                      setState(() {
+                        if (value) {
+                          prayerParameters.returnToday =
+                              ReturnToday.returnToday;
+                        } else {
+                          prayerParameters.returnToday =
+                              ReturnToday.notReturnToday;
+                        }
+                      });
+                    }),
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(16),
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    print("onpressed: ${appModel.getVoice()}");
+                    isPlaying ? stop() : readAloud(appModel.getVoice());
+                  },
+                  style: isPlaying
+                      ? ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.secondary,
+                          foregroundColor:
+                              Theme.of(context).colorScheme.onSecondary)
+                      : ElevatedButton.styleFrom(),
+                  child: isPlaying
+                      ? Text(AppLocalizations.of(context)!.stop)
+                      : Text(AppLocalizations.of(context)!.play_now),
+                ),
+                alarmExists
+                    ? ElevatedButton(
+                        onPressed: () async {
+                          bool success = await Alarm.stop(Constants.alarmId);
+                          if (success) {
+                            setState(() {
+                              alarmExists = false;
+                            });
                           }
-                        });
-                      }),
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(16),
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      print("onpressed: ${appModel.getVoice()}");
-                      isPlaying ? stop() : readAloud(appModel.getVoice());
-                    },
-                    child: isPlaying ? Text("לעצור") : Text('להשמיע עכשיו'),
-                    style: isPlaying
-                        ? ElevatedButton.styleFrom(
+                          if (mounted) {
+                            if (success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(AppLocalizations.of(
+                                              context)!
+                                          .recitation_canceled_successfully)));
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          AppLocalizations.of(context)!
+                                              .recitation_canceled_fail)));
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
                             backgroundColor:
-                                Theme.of(context).colorScheme.secondary,
+                                Theme.of(context).colorScheme.error,
                             foregroundColor:
-                                Theme.of(context).colorScheme.onSecondary)
-                        : ElevatedButton.styleFrom(),
-                  ),
-                  alarmExists
-                      ? ElevatedButton(
-                          onPressed: () async {
-                            bool success = await Alarm.stop(Constants.alarmId);
-                            if (success) {
-                              setState(() {
-                                alarmExists = false;
-                              });
-                            }
+                                Theme.of(context).colorScheme.onError),
+                        child: Text(
+                            AppLocalizations.of(context)!.cancel_recitation),
+                      )
+                    : ElevatedButton(
+                        onPressed: () async {
+                          PrayerParameters? parameters = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AlarmParametersPage()));
+                          startAnimation();
+                          if (parameters == null) {
                             if (mounted) {
-                              if (success) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text("השמעה בוטלה בהצלחה")));
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text("ביטול השמעה נכשל")));
-                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          AppLocalizations.of(context)!
+                                              .recitation_not_set)));
                             }
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.error,
-                              foregroundColor:
-                                  Theme.of(context).colorScheme.onError),
-                          child: Text('לבטל תפילה'),
-                        )
-                      : ElevatedButton(
-                          onPressed: () async {
-                            PrayerParameters? parameters = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        AlarmParametersPage()));
-                            startAnimation();
-                            if (parameters == null) {
-                              if (mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text("השמעה לא נקבעה")));
-                              }
-                              return;
-                            }
-                            print(parameters);
-                            String filename =
-                                "${parameters.prayerType.name}-${parameters.voiceType.name}-${parameters.returnToday.name}.mp3";
-                            final alarmSettings = AlarmSettings(
-                              id: Constants.alarmId,
-                              dateTime: DateTime.now().add(parameters.time),
-                              assetAudioPath: parameters.voiceType ==
-                                      VoiceType.custom
-                                  ? "/data/user/0/com.example.tefilat_haderech/app_flutter/custom.mp3"
-                                  : 'assets/sounds/$filename',
-                              loopAudio: false,
-                              vibrate: false,
-                              volumeMax: parameters.maxVolume,
-                              fadeDuration: 0,
-                              notificationTitle: 'תפילת דרך אוטומטית',
-                              notificationBody: 'אומר עכשיו',
-                              enableNotificationOnKill: true,
-                            );
-                            bool success =
-                                await Alarm.set(alarmSettings: alarmSettings);
-                            if (success) {
-                              setState(() {
-                                alarmExists = true;
-                              });
-                            }
-                          },
-                          child: Text('להשמיע עוד מעט'),
-                        ),
-                ],
-              ),
+                            return;
+                          }
+                          print(parameters);
+                          String filename =
+                              "${parameters.prayerType.name}-${parameters.voiceType.name}-${parameters.returnToday.name}.mp3";
+                          final alarmSettings = AlarmSettings(
+                            id: Constants.alarmId,
+                            dateTime: DateTime.now().add(parameters.time),
+                            assetAudioPath: parameters.voiceType ==
+                                    VoiceType.custom
+                                ? "/data/user/0/com.example.tefilat_haderech/app_flutter/custom.mp3"
+                                : 'assets/sounds/$filename',
+                            loopAudio: false,
+                            vibrate: false,
+                            volumeMax: parameters.maxVolume,
+                            fadeDuration: 0,
+                            notificationTitle: 'תפילת דרך אוטומטית',
+                            notificationBody: 'אומר עכשיו',
+                            enableNotificationOnKill: true,
+                          );
+                          bool success =
+                              await Alarm.set(alarmSettings: alarmSettings);
+                          if (success) {
+                            setState(() {
+                              alarmExists = true;
+                            });
+                          }
+                        },
+                        child: Text(AppLocalizations.of(context)!.recite_later),
+                      ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -5,6 +5,7 @@ class Constants {
   static String voiceType = "voiceType";
   static String isDarkTheme = "isDarkTheme";
   static String filename = "filename";
+  static String locale = "he";
   //constants
   static const String femaleName = "תהילה";
   static const String maleName = "שמואל";
@@ -17,6 +18,13 @@ enum VoiceType { female, male, custom }
 enum PrayerType { ashkenaz, sepharad, edotMizrach }
 
 enum ReturnToday { returnToday, notReturnToday }
+
+enum AppLocale { he, en }
+
+final Map<String, String> appLanguages = {
+  AppLocale.en.name: "English",
+  AppLocale.he.name: "Hebrew"
+};
 
 class Util {
   static VoiceType string2VoiceType(String voice) {

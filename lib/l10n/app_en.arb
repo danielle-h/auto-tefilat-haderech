@@ -1,0 +1,12 @@
+{
+   "app_title": "Tefilat haderech",
+   "home_page_title":"Tefilat haderech - Ashkenaz",
+    "return_today":"Returning today?",
+   "stop":"Stop",
+   "play_now":"Recite now",
+   "recitation_canceled_successfully":"Recitation canceled successfully",
+   "recitation_canceled_fail":"Recitation not canceled",
+   "cancel_recitation":"Cancel recitation",
+   "recitation_not_set":"Recitation not set",
+   "recite_later":"Recite later"
+}
