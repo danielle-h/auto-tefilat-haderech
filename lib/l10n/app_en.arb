@@ -1,9 +1,10 @@
 {
    "app_title": "Tefilat haderech",
    "home_page_title":"Tefilat haderech - Ashkenaz",
-    "return_today":"Returning today?",
+    "return_today":"Returning today",
    "stop":"Stop",
-   "play_now":"Recite now",
+    "not_return_today":"Not returning today",
+    "play_now":"Recite now",
    "recitation_canceled_successfully":"Recitation canceled successfully",
    "recitation_canceled_fail":"Recitation not canceled",
    "cancel_recitation":"Cancel recitation",
@@ -26,5 +27,18 @@
     "choose_file":"Choose file",
     "female_name":"Danielle",
     "male_name": "Samuel",
-    "custom_name": "My file"
+    "custom_name": "My file",
+     
+  "what_to_read": "What to recite?",
+  "how_much_longer": "When",
+  "minutes": "In {num} minutes",
+  "@minutes": {
+      "num": {
+        "type": "int",
+        "example": "5"
+      }
+    },
+  "which_voice": "Which voice",
+  "maximum_volume": "Maximum volume",
+  "set_prayer": "Set recitation"
 }

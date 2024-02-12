@@ -189,7 +189,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text(
-                  AppLocalizations.of(context)!.return_today,
+                  "${AppLocalizations.of(context)!.return_today}?",
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,

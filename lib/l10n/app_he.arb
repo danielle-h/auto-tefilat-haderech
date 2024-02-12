@@ -1,8 +1,9 @@
 {
    "app_title": "תפילת הדרך",
    "home_page_title":"תפילת הדרך-אשכנז",
-   "return_today":"חוזרים היום?",
+   "return_today":"חוזרים היום",
    "stop":"לעצור",
+    "not_return_today":"לא חוזרים היום",
    "play_now":"להשמיע עכשיו",
    "recitation_canceled_successfully":"השמעה בוטלה בהצלחה",
    "recitation_canceled_fail":"ביטול השמעה נכשל",
@@ -26,7 +27,23 @@
     "choose_file":"לבחור קובץ",
     "female_name":"תהילה",
     "male_name": "שמואל",
-    "custom_name":"קובץ שלי"
+    "custom_name":"קובץ שלי",
+    
+  "what_to_read": "מה להקריא",
+  "how_much_longer": "עוד כמה זמן",
+  "minutes": "{num} דקות",
+  "@minutes": {
+      "num": {
+        "type": "int",
+        "example": "5"
+      }
+    },
+  "which_voice": "איזה קול",
+  "returning_today": "חוזרים היום",
+  "maximum_volume": "ווליום מקסימלי",
+  "set_prayer": "לקבוע תפילה"
+
+
 }
 
 
