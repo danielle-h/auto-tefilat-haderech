@@ -11,6 +11,7 @@ import 'package:tefilat_haderech/model/app_model_notifier.dart';
 import 'package:tefilat_haderech/styles.dart';
 import 'package:uri_to_file/uri_to_file.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:url_launcher/link.dart';
 
 import 'widgets/app_dialog.dart';
 
@@ -190,18 +191,68 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingsTile(
                   leading: const Icon(Icons.question_mark),
                   onPressed: (context) {
-                    //not using aboutdialog because of directionality
-                    showDialog(
+                    // //not using aboutdialog because of directionality
+                    // showDialog(
+                    //     context: context,
+                    //     builder: ((context) {
+                    //       String appName = "תפילת דרך אוטומטית";
+                    //       String copyright =
+                    //           "כל הזכויות שמורות לדניאל הוניגשטיין 2023";
+                    //       return AppDialog(
+                    //           appName: appName,
+                    //           version: appVersion,
+                    //           copyright: copyright);
+                    //     }));
+                    showAboutDialog(
                         context: context,
-                        builder: ((context) {
-                          String appName = "תפילת דרך אוטומטית";
-                          String copyright =
-                              "כל הזכויות שמורות לדניאל הוניגשטיין 2023";
-                          return AppDialog(
-                              appName: appName,
-                              version: appVersion,
-                              copyright: copyright);
-                        }));
+                        applicationVersion: appVersion,
+                        applicationIcon: Image.asset(
+                          'assets/icon/ic_launcher_round.png',
+                          width: 50,
+                        ),
+                        applicationLegalese:
+                            AppLocalizations.of(context)!.legalese,
+                        children: [
+                          Text(AppLocalizations.of(context)!.app_action),
+                          Text(AppLocalizations.of(context)!.app_upload),
+                          Text(AppLocalizations.of(context)!.app_free),
+                          Link(
+                              uri: Uri.parse(
+                                  "https://github.com/danielle-h/auto-tefilat-haderech"),
+                              target: LinkTarget.defaultTarget,
+                              builder:
+                                  (BuildContext ctx, FollowLink? openLink) {
+                                return TextButton(
+                                    onPressed: openLink,
+                                    child: Text(AppLocalizations.of(context)!
+                                        .app_code));
+                              }),
+                          Text(AppLocalizations.of(context)!.app_website),
+                          Link(
+                              uri: Uri.parse("https://danielle-honig.com/"),
+                              target: LinkTarget.defaultTarget,
+                              builder:
+                                  (BuildContext ctx, FollowLink? openLink) {
+                                return TextButton(
+                                    onPressed: openLink,
+                                    child: Text(AppLocalizations.of(context)!
+                                        .my_website));
+                              }),
+                          Text(AppLocalizations.of(context)!.app_coffee),
+                          Link(
+                              uri: Uri.parse(
+                                  "https://www.buymeacoffee.com/369wkrttu6"),
+                              target: LinkTarget.defaultTarget,
+                              builder:
+                                  (BuildContext ctx, FollowLink? openLink) {
+                                return TextButton(
+                                  onPressed: openLink,
+                                  child: Text(AppLocalizations.of(context)!
+                                      .buy_me_a_chocolate),
+                                );
+                              }),
+                          Text(AppLocalizations.of(context)!.thank_you),
+                        ]);
                   },
                   value:
                       Text(AppLocalizations.of(context)!.version(appVersion)),

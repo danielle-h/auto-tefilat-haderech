@@ -40,5 +40,18 @@
     },
   "which_voice": "Which voice",
   "maximum_volume": "Maximum volume",
-  "set_prayer": "Set recitation"
+  "set_prayer": "Set recitation",
+  "legalese":"© Danielle Honigstein 2023",
+    "all_licenses": "All licenses",
+  "finished": "Done",
+  "app_action": "The app recites the traveler's prayer at the time you define.",
+  "app_upload": "You can also upload your own recitation.",
+  "app_free": "The app is free and open source:",
+  "app_code": "View code",
+  "app_website": "Check out more apps, games and info on my site:",
+  "my_website": "danielle-honig.com",
+  "app_coffee": "If you found it useful you are welcome to buy me a hot chocolate (I don't like coffee 😉)",
+  "buy_me_a_chocolate": "Buy me a hot chocolate",
+  "thank_you": "Thank you!"
+
 }

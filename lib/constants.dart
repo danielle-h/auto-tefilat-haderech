@@ -26,7 +26,7 @@ enum AppLocale { he, en }
 
 final Map<String, String> appLanguages = {
   AppLocale.en.name: "English",
-  AppLocale.he.name: "Hebrew"
+  AppLocale.he.name: "עברית"
 };
 
 class Util {

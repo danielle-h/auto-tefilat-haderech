@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tefilat_haderech/constants.dart';
@@ -27,11 +29,20 @@ class AppModelProvider extends ChangeNotifier {
     if (!initialized) {
       initialized = true;
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      String defaultLocale = Platform.localeName;
+      print("platform locale: $defaultLocale");
+      if (defaultLocale.startsWith("en")) {
+        defaultLocale = "en";
+      } else if (defaultLocale.startsWith("he")) {
+        defaultLocale = "he";
+      } else {
+        defaultLocale = "en";
+      }
 
       _appTheme = (prefs.getBool(Constants.isDarkTheme) ?? false)
           ? AppTheme.darkTheme()
           : AppTheme.lightTheme();
-      _locale = (prefs.getString(Constants.locale) ?? "he");
+      _locale = (prefs.getString(Constants.locale) ?? defaultLocale);
       _appVoice = VoiceType.values.firstWhere((element) =>
           element.name == (prefs.getString(Constants.voiceType) ?? "female"));
       print("appmodel $_appVoice");

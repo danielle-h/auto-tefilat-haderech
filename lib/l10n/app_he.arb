@@ -41,7 +41,21 @@
   "which_voice": "איזה קול",
   "returning_today": "חוזרים היום",
   "maximum_volume": "ווליום מקסימלי",
-  "set_prayer": "לקבוע תפילה"
+  "set_prayer": "לקבוע תפילה",
+  "legalese":"© כל הזכויות שמורות לדניאל הוניגשטיין 2023",
+  "all_licenses": "כל הרשיונות",
+  "finished": "סיימתי",
+  "app_action": "האפליקציה משמיעה את תפילת הדרך בזמן שאתם קובעים.",
+  "app_upload": "אתם יכולים גם להעלות הקלטה שלכם.",
+  "app_free": "האפליקציה חינמית והקוד שלה פתוח:",
+  "app_code": "צפו בקוד",
+  "app_website": "יש עוד דברים מעניינים באתר שלי",
+  "my_website": "אתר שלי",
+  "app_coffee": "אם אהבתם מוזמנים לקנות לי שוקו: (אני לא אוהבת קפה 😉)",
+  "buy_me_a_chocolate": "קנו לי שוקו",
+  "thank_you": "תודה רבה!"
+
+
 
 
 }
