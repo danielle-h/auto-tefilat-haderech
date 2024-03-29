@@ -24,6 +24,21 @@ Automatic Tefilat haderech reader. Reads aloud your preferred prayer, at the tim
  - Currently only supports English and Hebrew. If you want the interface in an additional language please open an issue or [contact me](https://danielle-honig.com/contact/).
  - Built in recitations are in Ashkenaz.
 
+## Code explanations and tutorials
+For the slide-in animation and some variants: 
+ - [Slide-in animation in a column in Flutter](https://danielle-honig.com/flutter/animation/2023/12/22/slide-in-animation-flutter.html)
+ - [Adding a curve to animations in Flutter](https://danielle-honig.com/flutter/animation/2024/01/11/adding-a-curve-flutter.html)
+ - [Slide in animation - video tutorial](https://www.youtube.com/watch?v=bcdVxweFhzI)
+Other subjects:
+ - [Picking a file and copying it in Flutter](https://danielle-honig.com/flutter/file/2023/12/15/pick-file-copy-flutter.html)
+ - [Using the android alarm manager](https://danielle-honig.com/flutter/2023/12/08/a-prayer-for-the-way.html)
+ - 
+
 ## Try it out
 [Download](https://play.google.com/store/apps/details?id=com.honeystone.tefilat_haderech) for free on Google Play.
+
+## Contribute
+If you would like to add something, please submit a pull request.  
+If you found the app or the tutorials useful, I love [hot chocolate](https://www.buymeacoffee.com/369wkrttu6).
+
 
