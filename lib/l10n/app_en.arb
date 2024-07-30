@@ -54,6 +54,7 @@
   "buy_me_a_chocolate": "Buy me a hot chocolate",
   "thank_you": "Thank you!",
   "notification_title": "Auto-Tefilat HaDerech",
-  "notification_body": "Tap to view"
+  "notification_body": "Tap to view",
+  "no_permission":"Permission not granted, setting alarm failed"
 
 }

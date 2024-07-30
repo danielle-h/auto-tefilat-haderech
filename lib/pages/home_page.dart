@@ -1,6 +1,7 @@
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:tefilat_haderech/model/app_model_notifier.dart';
 import 'package:tefilat_haderech/pages/alarm_params_page.dart';
@@ -50,7 +51,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     startAnimation();
     initPlayer();
+
     super.initState();
+  }
+
+  Future<bool> checkAndroidScheduleExactAlarmPermission() async {
+    final status = await Permission.scheduleExactAlarm.status;
+    if (status.isDenied) {
+      final res = await Permission.scheduleExactAlarm.request();
+      return res.isGranted;
+    } else {
+      return true;
+    }
   }
 
   void startAnimation() {
@@ -300,7 +312,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   : 'assets/sounds/$filename',
                               loopAudio: false,
                               vibrate: false,
-                              volumeMax: parameters.maxVolume,
+                              volume: parameters.volume,
                               fadeDuration: 0,
                               notificationTitle: AppLocalizations.of(context)!
                                   .notification_title,
@@ -308,6 +320,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   .notification_body,
                               enableNotificationOnKill: true,
                             );
+                            //verify permissions
+                            bool gotPermission =
+                                await checkAndroidScheduleExactAlarmPermission();
+                            if (!context.mounted) {
+                              return;
+                            }
+                            if (!gotPermission) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          AppLocalizations.of(context)!
+                                              .no_permission)));
+                              return;
+                            }
                             bool success =
                                 await Alarm.set(alarmSettings: alarmSettings);
                             if (success) {

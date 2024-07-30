@@ -55,7 +55,9 @@
   "buy_me_a_chocolate": "קנו לי שוקו",
   "thank_you": "תודה רבה!",
   "notification_title": "תפילת דרך אוטומטית",
-  "notification_body": "לחצו לצפייה"
+  "notification_body": "לחצו לצפייה",
+  "no_permission":"הרשאה לא ניתנה, תפילה לא נקבעה"
+
 
 
 

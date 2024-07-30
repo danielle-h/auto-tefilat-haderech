@@ -5,7 +5,7 @@ class PrayerParameters {
   VoiceType voiceType = VoiceType.female;
   Duration time = const Duration(minutes: 30);
   PrayerType prayerType = PrayerType.ashkenaz;
-  bool maxVolume = false;
+  double volume = 1.0;
 
   void setTime(int minutes) {
     time = Duration(minutes: minutes);

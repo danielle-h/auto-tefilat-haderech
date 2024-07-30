@@ -21,7 +21,7 @@ class _AlarmParametersPageState extends State<AlarmParametersPage>
   PrayerType prayerType = PrayerType.ashkenaz;
   VoiceType voiceType = VoiceType.female;
   ReturnToday returnToday = ReturnToday.returnToday;
-  bool maxVolume = true;
+  double volume = 1.0;
   bool vibrate = false;
 
   //animation
@@ -187,13 +187,15 @@ class _AlarmParametersPageState extends State<AlarmParametersPage>
                       const SizedBox(
                         height: spaceBetween,
                       ),
-                      Switch(
-                          value: maxVolume,
-                          onChanged: (value) {
+                      Slider(
+                          value: volume,
+                          onChanged: (newVolume) {
                             setState(() {
-                              maxVolume = value;
+                              volume = newVolume;
                             });
-                          }),
+                          },
+                          min: 0,
+                          max: 1.0)
                     ],
                   ),
                 ),
@@ -210,7 +212,7 @@ class _AlarmParametersPageState extends State<AlarmParametersPage>
                       parameters.returnToday = returnToday;
                       parameters.time = Duration(minutes: numMinutes);
                       parameters.voiceType = voiceType;
-                      parameters.maxVolume = maxVolume;
+                      parameters.volume = volume;
                       Navigator.pop(context, parameters);
                       //parameters.prayerType =
                     },
