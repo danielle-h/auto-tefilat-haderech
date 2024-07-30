@@ -173,7 +173,6 @@ class _AlarmParametersPageState extends State<AlarmParametersPage>
                     ],
                   ),
                 ),
-                //maximum volume?
                 AnimatedTile(
                   animation: animation,
                   slide: slide[3],
