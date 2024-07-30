@@ -53,7 +53,9 @@
   "my_website": "אתר שלי",
   "app_coffee": "אם אהבתם מוזמנים לקנות לי שוקו: (אני לא אוהבת קפה 😉)",
   "buy_me_a_chocolate": "קנו לי שוקו",
-  "thank_you": "תודה רבה!"
+  "thank_you": "תודה רבה!",
+  "notification_title": "תפילת דרך אוטומטית",
+  "notification_body": "לחצו לצפייה"
 
 
 

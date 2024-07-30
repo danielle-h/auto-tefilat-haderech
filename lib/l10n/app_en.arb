@@ -52,6 +52,8 @@
   "my_website": "danielle-honig.com",
   "app_coffee": "If you found it useful you are welcome to buy me a hot chocolate (I don't like coffee 😉)",
   "buy_me_a_chocolate": "Buy me a hot chocolate",
-  "thank_you": "Thank you!"
+  "thank_you": "Thank you!",
+  "notification_title": "Auto-Tefilat HaDerech",
+  "notification_body": "Tap to view"
 
 }

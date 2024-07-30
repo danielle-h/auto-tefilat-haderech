@@ -290,27 +290,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           print(parameters);
                           String filename =
                               "${parameters.prayerType.name}-${parameters.voiceType.name}-${parameters.returnToday.name}.mp3";
-                          final alarmSettings = AlarmSettings(
-                            id: Constants.alarmId,
-                            dateTime: DateTime.now().add(parameters.time),
-                            assetAudioPath: parameters.voiceType ==
-                                    VoiceType.custom
-                                ? "/data/user/0/com.example.tefilat_haderech/app_flutter/custom.mp3"
-                                : 'assets/sounds/$filename',
-                            loopAudio: false,
-                            vibrate: false,
-                            volumeMax: parameters.maxVolume,
-                            fadeDuration: 0,
-                            notificationTitle: 'תפילת דרך אוטומטית',
-                            notificationBody: 'אומר עכשיו',
-                            enableNotificationOnKill: true,
-                          );
-                          bool success =
-                              await Alarm.set(alarmSettings: alarmSettings);
-                          if (success) {
-                            setState(() {
-                              alarmExists = true;
-                            });
+                          if (mounted) {
+                            final alarmSettings = AlarmSettings(
+                              id: Constants.alarmId,
+                              dateTime: DateTime.now().add(parameters.time),
+                              assetAudioPath: parameters.voiceType ==
+                                      VoiceType.custom
+                                  ? "/data/user/0/com.example.tefilat_haderech/app_flutter/custom.mp3"
+                                  : 'assets/sounds/$filename',
+                              loopAudio: false,
+                              vibrate: false,
+                              volumeMax: parameters.maxVolume,
+                              fadeDuration: 0,
+                              notificationTitle: AppLocalizations.of(context)!
+                                  .notification_title,
+                              notificationBody: AppLocalizations.of(context)!
+                                  .notification_body,
+                              enableNotificationOnKill: true,
+                            );
+                            bool success =
+                                await Alarm.set(alarmSettings: alarmSettings);
+                            if (success) {
+                              setState(() {
+                                alarmExists = true;
+                              });
+                            }
                           }
                         },
                         child: Text(AppLocalizations.of(context)!.recite_later),
