@@ -21,7 +21,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+class _HomePageState extends State<HomePage>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   final player = AudioPlayer();
   bool isPlaying = false;
   bool alarmExists = false;
@@ -53,12 +54,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     initPlayer();
 
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
   }
 
   Future<bool> checkAndroidScheduleExactAlarmPermission() async {
     final status = await Permission.scheduleExactAlarm.status;
+    print("status: $status");
     if (status.isDenied) {
       final res = await Permission.scheduleExactAlarm.request();
+      print("status: ${res.name}");
+
       return res.isGranted;
     } else {
       return true;
@@ -81,13 +87,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         });
       }
     });
+    checkForAlarms();
+    //player.set
+  }
+
+  void checkForAlarms() {
     AlarmSettings? previousAlarm = Alarm.getAlarm(Constants.alarmId);
+    print("previous alarm: $previousAlarm");
     if (previousAlarm != null) {
       setState(() {
         alarmExists = true;
       });
     }
-    //player.set
   }
 
   void readAloud(VoiceType voiceType) async {
@@ -129,7 +140,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void dispose() {
     animationController.dispose();
     player.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      print("state: resumed");
+      checkForAlarms();
+    }
+    super.didChangeAppLifecycleState(state);
   }
 
   @override
@@ -337,6 +358,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             bool success =
                                 await Alarm.set(alarmSettings: alarmSettings);
                             if (success) {
+                              Alarm.ringStream.stream.listen((_) => () {
+                                    print("ringing");
+                                    Alarm.stop(Constants.alarmId);
+                                    setState(() {
+                                      alarmExists = false;
+                                    });
+                                  });
                               setState(() {
                                 alarmExists = true;
                               });
