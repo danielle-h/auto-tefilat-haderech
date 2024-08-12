@@ -111,8 +111,9 @@ class _HomePageState extends State<HomePage>
 
     if (previousAlarm != null &&
         previousAlarm.dateTime
-            .isBefore(DateTime.now().add(const Duration(minutes: 1)))) {
+            .isBefore(DateTime.now().subtract(const Duration(minutes: 1)))) {
       //might be playing now
+      print("stopping alarm");
       Alarm.stop(Constants.alarmId); //stop if not stopped already
       previousAlarm = null;
     }
