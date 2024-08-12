@@ -24,7 +24,7 @@
     "settings":"Settings",
     "voice":"Voice",
     "which_voice":"Voice type",
-    "choose_file":"Choose file",
+    "choose_file":"Choose file (up to 1 minute)",
     "female_name":"Danielle",
     "male_name": "Samuel",
     "custom_name": "My file",

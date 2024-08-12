@@ -191,18 +191,6 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingsTile(
                   leading: const Icon(Icons.question_mark),
                   onPressed: (context) {
-                    // //not using aboutdialog because of directionality
-                    // showDialog(
-                    //     context: context,
-                    //     builder: ((context) {
-                    //       String appName = "תפילת דרך אוטומטית";
-                    //       String copyright =
-                    //           "כל הזכויות שמורות לדניאל הוניגשטיין 2023";
-                    //       return AppDialog(
-                    //           appName: appName,
-                    //           version: appVersion,
-                    //           copyright: copyright);
-                    //     }));
                     showAboutDialog(
                         context: context,
                         applicationVersion: appVersion,

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tefilat_haderech/constants.dart';
@@ -28,6 +30,9 @@ class _AlarmParametersPageState extends State<AlarmParametersPage>
   late AnimationController animationController;
   late Animation<double> animation;
   List<double> slide = [10, 30, 50, 90];
+
+  //UI
+  final int pickerStep = 5;
 
   @override
   void initState() {
@@ -77,13 +82,13 @@ class _AlarmParametersPageState extends State<AlarmParametersPage>
                         height: 60,
                         child: CupertinoPicker(
                             onSelectedItemChanged: (newNum) {
-                              numMinutes = (newNum + 1) * 5;
+                              numMinutes = (newNum + 1) * pickerStep;
                             },
                             itemExtent: 30,
                             children: List.generate(
                                 24,
                                 (index) => Text(AppLocalizations.of(context)!
-                                    .minutes((index + 1) * 5)))),
+                                    .minutes((index + 1) * pickerStep)))),
                       ),
                     ],
                   ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -7,7 +9,6 @@ import 'package:tefilat_haderech/model/app_model_notifier.dart';
 import 'package:tefilat_haderech/pages/alarm_params_page.dart';
 import 'package:tefilat_haderech/model/prayer_parameters.dart';
 import 'package:tefilat_haderech/pages/settings_page.dart';
-import 'package:tefilat_haderech/styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../constants.dart';
@@ -15,7 +16,7 @@ import 'widgets/animated_tile.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key, required this.prayerType});
-  final PrayerType prayerType;
+  final PrayerType prayerType; //For the future, not really used yet
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -23,9 +24,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with TickerProviderStateMixin, WidgetsBindingObserver {
+  //for reciting now
   final player = AudioPlayer();
-  bool isPlaying = false;
+  bool isPlaying = false; //is it reciting now?
+
+  //alarms
+  late final StreamSubscription<AlarmSettings> subscription;
   bool alarmExists = false;
+
+  //model
   PrayerParameters prayerParameters = PrayerParameters();
 
   //animation
@@ -42,20 +49,29 @@ class _HomePageState extends State<HomePage>
 
   @override
   void initState() {
+    //init model
     final appModel = Provider.of<AppModelProvider>(context, listen: false);
     appModel.initModel();
-
+    //animations
     animationController = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
     animation = CurvedAnimation(
         parent: animationController, curve: Curves.fastOutSlowIn);
-
     startAnimation();
+    //initialize player
     initPlayer();
 
     super.initState();
-
+    //check alarms on resume
     WidgetsBinding.instance.addObserver(this);
+    //alarms
+    subscription = Alarm.ringStream.stream.listen((event) {
+      //cancel notification and reset home page in one minute
+      //TODO add warning when uploading custom file
+      Future.delayed(Duration(minutes: 1), () {
+        checkForAlarms();
+      });
+    });
   }
 
   Future<bool> checkAndroidScheduleExactAlarmPermission() async {
@@ -77,8 +93,7 @@ class _HomePageState extends State<HomePage>
   }
 
   Future<void> initPlayer() async {
-    //await player.setAsset("assets/sounds/ashkenaz-female-notReturnToday.mp3");
-    //print("loop mode: ${player.loopMode}");
+    //this is for reciting now only. in alarm it's handled by the alarm package
     player.playerStateStream.listen((playerState) {
       print("playerstate: ${playerState.processingState}");
       if (playerState.processingState == ProcessingState.completed) {
@@ -88,19 +103,25 @@ class _HomePageState extends State<HomePage>
       }
     });
     checkForAlarms();
-    //player.set
   }
 
+  //check for existing alarms
   void checkForAlarms() {
     AlarmSettings? previousAlarm = Alarm.getAlarm(Constants.alarmId);
-    print("previous alarm: $previousAlarm");
-    if (previousAlarm != null) {
-      setState(() {
-        alarmExists = true;
-      });
+
+    if (previousAlarm != null &&
+        previousAlarm.dateTime
+            .isBefore(DateTime.now().add(const Duration(minutes: 1)))) {
+      //might be playing now
+      Alarm.stop(Constants.alarmId); //stop if not stopped already
+      previousAlarm = null;
     }
+    setState(() {
+      alarmExists = previousAlarm != null;
+    });
   }
 
+  //recite now
   void readAloud(VoiceType voiceType) async {
     if (!isPlaying) {
       print("home voice: $voiceType");
@@ -127,6 +148,7 @@ class _HomePageState extends State<HomePage>
     }
   }
 
+  //stop reciting now. This is not connected to alarms
   void stop() {
     if (isPlaying) {
       player.stop();
@@ -141,6 +163,7 @@ class _HomePageState extends State<HomePage>
     animationController.dispose();
     player.dispose();
     WidgetsBinding.instance.removeObserver(this);
+    subscription.cancel();
     super.dispose();
   }
 
@@ -156,8 +179,6 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     AppModelProvider appModel = Provider.of<AppModelProvider>(context);
-    print("rebuilding home");
-    print(appModel.getLocale());
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.home_page_title),
@@ -176,21 +197,6 @@ class _HomePageState extends State<HomePage>
       ),
       body: Column(
         children: <Widget>[
-          // AnimatedBuilder(
-          //     animation: animation,
-          //     builder: (context, child) {
-          //       return Transform(
-          //         transform: Matrix4.translationValues(
-          //             0, (1.0 - animation.value) * slide[0], 0),
-          //         child: Container(
-          //           padding: EdgeInsets.all(16),
-          //           child: Text(
-          //             "תפילת הדרך",
-          //             style: Theme.of(context).textTheme.titleLarge,
-          //           ),
-          //         ),
-          //       );
-          //     }),
           Expanded(
             child: SingleChildScrollView(
               child: Container(
@@ -323,7 +329,7 @@ class _HomePageState extends State<HomePage>
                           print(parameters);
                           String filename =
                               "${parameters.prayerType.name}-${parameters.voiceType.name}-${parameters.returnToday.name}.mp3";
-                          if (mounted) {
+                          if (context.mounted) {
                             final alarmSettings = AlarmSettings(
                               id: Constants.alarmId,
                               dateTime: DateTime.now().add(parameters.time),
@@ -358,13 +364,6 @@ class _HomePageState extends State<HomePage>
                             bool success =
                                 await Alarm.set(alarmSettings: alarmSettings);
                             if (success) {
-                              Alarm.ringStream.stream.listen((_) => () {
-                                    print("ringing");
-                                    Alarm.stop(Constants.alarmId);
-                                    setState(() {
-                                      alarmExists = false;
-                                    });
-                                  });
                               setState(() {
                                 alarmExists = true;
                               });
