@@ -68,7 +68,9 @@ class _HomePageState extends State<HomePage>
     subscription = Alarm.ringStream.stream.listen((event) {
       //cancel notification and reset home page in one minute
       //TODO add warning when uploading custom file
-      Future.delayed(Duration(minutes: 1), () {
+      print("alarm: $event");
+      Future.delayed(Duration(minutes: 2), () {
+        print("delayed");
         checkForAlarms();
       });
     });
@@ -108,7 +110,7 @@ class _HomePageState extends State<HomePage>
   //check for existing alarms
   void checkForAlarms() {
     AlarmSettings? previousAlarm = Alarm.getAlarm(Constants.alarmId);
-
+    print("previous alarm: $previousAlarm");
     if (previousAlarm != null &&
         previousAlarm.dateTime
             .isBefore(DateTime.now().subtract(const Duration(minutes: 1)))) {
@@ -333,6 +335,7 @@ class _HomePageState extends State<HomePage>
                           if (context.mounted) {
                             final alarmSettings = AlarmSettings(
                               id: Constants.alarmId,
+                              androidFullScreenIntent: false,
                               dateTime: DateTime.now().add(parameters.time),
                               assetAudioPath: parameters.voiceType ==
                                       VoiceType.custom

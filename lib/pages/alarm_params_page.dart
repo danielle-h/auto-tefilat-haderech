@@ -36,6 +36,7 @@ class _AlarmParametersPageState extends State<AlarmParametersPage>
 
   @override
   void initState() {
+    numMinutes = pickerStep; // have the default be the same as the first step.
     animationController = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
     animation = CurvedAnimation(
@@ -211,12 +212,14 @@ class _AlarmParametersPageState extends State<AlarmParametersPage>
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
+                      print("numMinutes: $numMinutes");
                       PrayerParameters parameters = PrayerParameters();
                       parameters.prayerType = prayerType;
                       parameters.returnToday = returnToday;
                       parameters.time = Duration(minutes: numMinutes);
                       parameters.voiceType = voiceType;
                       parameters.volume = volume;
+                      print(parameters.time);
                       Navigator.pop(context, parameters);
                       //parameters.prayerType =
                     },
