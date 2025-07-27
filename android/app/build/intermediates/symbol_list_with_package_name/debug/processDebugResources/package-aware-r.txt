@@ -934,6 +934,7 @@ id search_voice_btn
 id seekbar
 id seekbar_value
 id select_dialog_listview
+id sentry_privacy
 id shortcut
 id showCustom
 id showHome
