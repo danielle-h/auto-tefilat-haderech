@@ -91,8 +91,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-sentry:
-  upload_debug_symbols: true
-  upload_source_maps: true
-  project: tefilat_haderech
-  org: honeystone
