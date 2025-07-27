@@ -43,4 +43,10 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# Android
+android/.gradle/
+android/app/build/
+android/app/.cxx
+
 sentry.properties
+macos/Flutter/GeneratedPluginRegistrant.swift
