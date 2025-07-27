@@ -69,7 +69,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get which_voice => 'Which voice';
 
   @override
-  String get choose_file => 'Choose file (up to 1 minute)';
+  String get choose_file => 'Choose file (up to 2 minutes)';
 
   @override
   String get female_name => 'Danielle';

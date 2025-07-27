@@ -68,7 +68,7 @@ class AppLocalizationsHe extends AppLocalizations {
   String get which_voice => 'איזה קול';
 
   @override
-  String get choose_file => 'לבחור קובץ (עד דקה)';
+  String get choose_file => 'לבחור קובץ (עד 2 דקות)';
 
   @override
   String get female_name => 'תהילה';

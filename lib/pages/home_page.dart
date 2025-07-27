@@ -67,7 +67,6 @@ class _HomePageState extends State<HomePage>
     //alarms
     subscription = Alarm.ringStream.stream.listen((event) {
       //cancel notification and reset home page in one minute
-      //TODO add warning when uploading custom file
       print("alarm: $event");
       Future.delayed(Duration(minutes: 2), () async {
         print("delayed");
