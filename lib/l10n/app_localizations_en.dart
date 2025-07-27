@@ -127,7 +127,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get app_coffee =>
-      'If you found it useful you are welcome to buy me a hot chocolate (I don\'t like coffee 😉)';
+      'If you found it useful you are welcome to buy me a hot chocolate';
 
   @override
   String get buy_me_a_chocolate => 'Buy me a hot chocolate';
@@ -143,4 +143,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_permission => 'Permission not granted, setting alarm failed';
+
+  @override
+  String get rate_app => 'Rate and review in the app store';
+
+  @override
+  String get app_contact => 'Questions? Problems? Suggestions?';
+
+  @override
+  String get contact_me => 'Contact me';
 }

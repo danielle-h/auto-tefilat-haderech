@@ -1,48 +1,47 @@
 {
-   "app_title": "Tefilat haderech",
-   "home_page_title":"Tefilat haderech - Ashkenaz",
-    "return_today":"Returning today",
-   "stop":"Stop",
-    "not_return_today":"Not returning today",
-    "play_now":"Recite now",
-   "recitation_canceled_successfully":"Recitation canceled successfully",
-   "recitation_canceled_fail":"Recitation not canceled",
-   "cancel_recitation":"Cancel recitation",
-   "recitation_not_set":"Recitation not set",
-   "recite_later":"Recite later",
-   "dark_mode":"Dark mode",
-   "language": "Language",
-   "choose_language":"Choose language",
-   "version": "Version {ver}",
-   "@version": {
-      "ver": {
-        "type": "String",
-        "example": "1.0.0"
-      }
-    },
-    "about_app":"About app",
-    "settings":"Settings",
-    "voice":"Voice",
-    "which_voice":"Voice type",
-    "choose_file":"Choose file (up to 2 minutes)",
-    "female_name":"Danielle",
-    "male_name": "Samuel",
-    "custom_name": "My file",
-     
+  "app_title": "Tefilat haderech",
+  "home_page_title": "Tefilat haderech - Ashkenaz",
+  "return_today": "Returning today",
+  "stop": "Stop",
+  "not_return_today": "Not returning today",
+  "play_now": "Recite now",
+  "recitation_canceled_successfully": "Recitation canceled successfully",
+  "recitation_canceled_fail": "Recitation not canceled",
+  "cancel_recitation": "Cancel recitation",
+  "recitation_not_set": "Recitation not set",
+  "recite_later": "Recite later",
+  "dark_mode": "Dark mode",
+  "language": "Language",
+  "choose_language": "Choose language",
+  "version": "Version {ver}",
+  "@version": {
+    "ver": {
+      "type": "String",
+      "example": "1.0.0"
+    }
+  },
+  "about_app": "About app",
+  "settings": "Settings",
+  "voice": "Voice",
+  "which_voice": "Voice type",
+  "choose_file": "Choose file (up to 2 minutes)",
+  "female_name": "Danielle",
+  "male_name": "Samuel",
+  "custom_name": "My file",
   "what_to_read": "What to recite?",
   "how_much_longer": "When",
   "minutes": "In {num} minutes",
   "@minutes": {
-      "num": {
-        "type": "int",
-        "example": "5"
-      }
-    },
+    "num": {
+      "type": "int",
+      "example": "5"
+    }
+  },
   "which_voice": "Which voice",
   "maximum_volume": "Alarm volume",
   "set_prayer": "Set recitation",
-  "legalese":"© Danielle Honigstein 2023",
-    "all_licenses": "All licenses",
+  "legalese": "© Danielle Honigstein 2023",
+  "all_licenses": "All licenses",
   "finished": "Done",
   "app_action": "The app recites the traveler's prayer at the time you define.",
   "app_upload": "You can also upload your own recitation.",
@@ -50,11 +49,13 @@
   "app_code": "View code",
   "app_website": "Check out more apps, games and info on my site:",
   "my_website": "danielle-honig.com",
-  "app_coffee": "If you found it useful you are welcome to buy me a hot chocolate (I don't like coffee 😉)",
+  "app_coffee": "If you found it useful you are welcome to buy me a hot chocolate",
   "buy_me_a_chocolate": "Buy me a hot chocolate",
   "thank_you": "Thank you!",
   "notification_title": "Auto-Tefilat HaDerech",
   "notification_body": "Tap to view",
-  "no_permission":"Permission not granted, setting alarm failed"
-
+  "no_permission": "Permission not granted, setting alarm failed",
+  "rate_app": "Rate and review in the app store",
+  "app_contact": "Questions? Problems? Suggestions?",
+  "contact_me": "Contact me"
 }

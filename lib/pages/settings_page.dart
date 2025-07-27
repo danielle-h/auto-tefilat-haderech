@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -215,6 +216,19 @@ class _SettingsPageState extends State<SettingsPage> {
                                     child: Text(AppLocalizations.of(context)!
                                         .app_code));
                               }),
+                              Text(AppLocalizations.of(context)!.app_contact),
+                              Link(
+                              uri: Uri.parse(
+                                  "https://danielle-honig.com/contact"),
+                              target: LinkTarget.defaultTarget,
+                              builder:
+                                  (BuildContext ctx, FollowLink? openLink) {
+                                return TextButton(
+                                    onPressed: openLink,
+                                    child: Text(AppLocalizations.of(context)!
+                                        .contact_me));
+                              }),
+        
                           Text(AppLocalizations.of(context)!.app_website),
                           Link(
                               uri: Uri.parse("https://danielle-honig.com/"),
@@ -244,7 +258,16 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                   value:
                       Text(AppLocalizations.of(context)!.version(appVersion)),
-                  title: Text(AppLocalizations.of(context)!.about_app))
+                  title: Text(AppLocalizations.of(context)!.about_app)),
+              //call to rate my app
+              SettingsTile(
+                leading: const Icon(Icons.star),
+                title: Text(AppLocalizations.of(context)!.rate_app),
+                onPressed: (context) {
+                  // Open the app store or play store for rating using in_app_review
+                  InAppReview.instance.openStoreListing();
+                },
+              ),
             ],
           ),
         ],

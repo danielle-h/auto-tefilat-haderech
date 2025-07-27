@@ -124,8 +124,7 @@ class AppLocalizationsHe extends AppLocalizations {
   String get my_website => 'אתר שלי';
 
   @override
-  String get app_coffee =>
-      'אם אהבתם מוזמנים לקנות לי שוקו: (אני לא אוהבת קפה 😉)';
+  String get app_coffee => 'אם אהבתם מוזמנים לקנות לי שוקו';
 
   @override
   String get buy_me_a_chocolate => 'קנו לי שוקו';
@@ -141,4 +140,13 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get no_permission => 'הרשאה לא ניתנה, תפילה לא נקבעה';
+
+  @override
+  String get rate_app => 'לדרג ולהביע דעה בגוגל פליי';
+
+  @override
+  String get app_contact => 'שאלות? בעיות? הצעות?';
+
+  @override
+  String get contact_me => 'צרו קשר';
 }

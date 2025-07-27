@@ -323,7 +323,7 @@ abstract class AppLocalizations {
   /// No description provided for @app_coffee.
   ///
   /// In en, this message translates to:
-  /// **'If you found it useful you are welcome to buy me a hot chocolate (I don\'t like coffee 😉)'**
+  /// **'If you found it useful you are welcome to buy me a hot chocolate'**
   String get app_coffee;
 
   /// No description provided for @buy_me_a_chocolate.
@@ -355,6 +355,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Permission not granted, setting alarm failed'**
   String get no_permission;
+
+  /// No description provided for @rate_app.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate and review in the app store'**
+  String get rate_app;
+
+  /// No description provided for @app_contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions? Problems? Suggestions?'**
+  String get app_contact;
+
+  /// No description provided for @contact_me.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact me'**
+  String get contact_me;
 }
 
 class _AppLocalizationsDelegate

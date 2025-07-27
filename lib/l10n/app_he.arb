@@ -1,48 +1,47 @@
 {
-   "app_title": "תפילת הדרך",
-   "home_page_title":"תפילת הדרך-אשכנז",
-   "return_today":"חוזרים היום",
-   "stop":"לעצור",
-    "not_return_today":"לא חוזרים היום",
-   "play_now":"להשמיע עכשיו",
-   "recitation_canceled_successfully":"השמעה בוטלה בהצלחה",
-   "recitation_canceled_fail":"ביטול השמעה נכשל",
-   "cancel_recitation":"לבטל תפילה",
-   "recitation_not_set":"השמעה לא נקבעה",
-   "recite_later":"להשמיע עוד מעט",
-   "dark_mode":"מצב כהה",
-   "language": "שפה",
-   "choose_language":"בחירת שפה",
-   "version": "גרסה {ver}",
-   "@version": {
-      "ver": {
-        "type": "String",
-        "example": "1.0.0"
-      }
-    },
-    "about_app":"על האפליקציה",
-    "settings":"הגדרות",
-    "voice":"קול",
-    "which_voice":"איזה קול",
-    "choose_file":"לבחור קובץ (עד 2 דקות)",
-    "female_name":"תהילה",
-    "male_name": "שמואל",
-    "custom_name":"קובץ שלי",
-    
+  "app_title": "תפילת הדרך",
+  "home_page_title": "תפילת הדרך-אשכנז",
+  "return_today": "חוזרים היום",
+  "stop": "לעצור",
+  "not_return_today": "לא חוזרים היום",
+  "play_now": "להשמיע עכשיו",
+  "recitation_canceled_successfully": "השמעה בוטלה בהצלחה",
+  "recitation_canceled_fail": "ביטול השמעה נכשל",
+  "cancel_recitation": "לבטל תפילה",
+  "recitation_not_set": "השמעה לא נקבעה",
+  "recite_later": "להשמיע עוד מעט",
+  "dark_mode": "מצב כהה",
+  "language": "שפה",
+  "choose_language": "בחירת שפה",
+  "version": "גרסה {ver}",
+  "@version": {
+    "ver": {
+      "type": "String",
+      "example": "1.0.0"
+    }
+  },
+  "about_app": "על האפליקציה",
+  "settings": "הגדרות",
+  "voice": "קול",
+  "which_voice": "איזה קול",
+  "choose_file": "לבחור קובץ (עד 2 דקות)",
+  "female_name": "תהילה",
+  "male_name": "שמואל",
+  "custom_name": "קובץ שלי",
   "what_to_read": "מה להקריא",
   "how_much_longer": "עוד כמה זמן",
   "minutes": "{num} דקות",
   "@minutes": {
-      "num": {
-        "type": "int",
-        "example": "5"
-      }
-    },
+    "num": {
+      "type": "int",
+      "example": "5"
+    }
+  },
   "which_voice": "איזה קול",
   "returning_today": "חוזרים היום",
   "maximum_volume": "ווליום",
   "set_prayer": "לקבוע תפילה",
-  "legalese":"© כל הזכויות שמורות לדניאל הוניגשטיין 2023",
+  "legalese": "© כל הזכויות שמורות לדניאל הוניגשטיין 2023",
   "all_licenses": "כל הרשיונות",
   "finished": "סיימתי",
   "app_action": "האפליקציה משמיעה את תפילת הדרך בזמן שאתם קובעים.",
@@ -51,18 +50,13 @@
   "app_code": "צפו בקוד",
   "app_website": "יש עוד דברים מעניינים באתר שלי",
   "my_website": "אתר שלי",
-  "app_coffee": "אם אהבתם מוזמנים לקנות לי שוקו: (אני לא אוהבת קפה 😉)",
+  "app_coffee": "אם אהבתם מוזמנים לקנות לי שוקו",
   "buy_me_a_chocolate": "קנו לי שוקו",
   "thank_you": "תודה רבה!",
   "notification_title": "תפילת דרך אוטומטית",
   "notification_body": "לחצו לצפייה",
-  "no_permission":"הרשאה לא ניתנה, תפילה לא נקבעה"
-
-
-
-
-
+  "no_permission": "הרשאה לא ניתנה, תפילה לא נקבעה",
+  "rate_app": "לדרג ולהביע דעה בגוגל פליי",
+  "app_contact": "שאלות? בעיות? הצעות?",
+  "contact_me": "צרו קשר"
 }
-
-
-
