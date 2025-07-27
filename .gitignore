@@ -50,3 +50,4 @@ android/app/.cxx
 
 sentry.properties
 macos/Flutter/GeneratedPluginRegistrant.swift
+android/build/reports/problems/problems-report.html
