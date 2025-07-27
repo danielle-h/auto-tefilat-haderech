@@ -28,18 +28,18 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  alarm: ^3.1.5
+  alarm: ^5.1.4
   cupertino_icons: ^1.0.2
-  file_picker: ^8.0.6
+  file_picker: ^10.2.0
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
   intl: any
-  just_audio: ^0.9.36
+  just_audio: ^0.10.4
   package_info_plus: ^8.0.1
   path_provider: ^2.1.1
-  permission_handler: ^11.3.1
+  permission_handler: ^12.0.1
   provider: ^6.1.1
   settings_ui: ^2.0.2
   shared_preferences: ^2.2.2
@@ -47,7 +47,7 @@ dependencies:
   url_launcher: ^6.2.2
 
 dev_dependencies:
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
 

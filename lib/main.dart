@@ -2,8 +2,8 @@ import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tefilat_haderech/constants.dart';
+import 'package:tefilat_haderech/l10n/app_localizations.dart';
 import 'package:tefilat_haderech/model/app_model_notifier.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'pages/home_page.dart';
 
 void main() async {

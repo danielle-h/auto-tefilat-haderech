@@ -1,0 +1,20 @@
+@echo off
+"C:\\Users\\danielle\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\cmake.exe" ^
+  "-HC:\\flutter\\packages\\flutter_tools\\gradle\\src\\main\\scripts" ^
+  "-DCMAKE_SYSTEM_NAME=Android" ^
+  "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON" ^
+  "-DCMAKE_SYSTEM_VERSION=21" ^
+  "-DANDROID_PLATFORM=android-21" ^
+  "-DANDROID_ABI=x86_64" ^
+  "-DCMAKE_ANDROID_ARCH_ABI=x86_64" ^
+  "-DANDROID_NDK=C:\\Users\\danielle\\AppData\\Local\\Android\\sdk\\ndk\\27.0.12077973" ^
+  "-DCMAKE_ANDROID_NDK=C:\\Users\\danielle\\AppData\\Local\\Android\\sdk\\ndk\\27.0.12077973" ^
+  "-DCMAKE_TOOLCHAIN_FILE=C:\\Users\\danielle\\AppData\\Local\\Android\\sdk\\ndk\\27.0.12077973\\build\\cmake\\android.toolchain.cmake" ^
+  "-DCMAKE_MAKE_PROGRAM=C:\\Users\\danielle\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe" ^
+  "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=C:\\Users\\danielle\\Documents\\projects\\personal\\tefilat_haderech\\android\\app\\build\\intermediates\\cxx\\Debug\\3i5a1x65\\obj\\x86_64" ^
+  "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=C:\\Users\\danielle\\Documents\\projects\\personal\\tefilat_haderech\\android\\app\\build\\intermediates\\cxx\\Debug\\3i5a1x65\\obj\\x86_64" ^
+  "-DCMAKE_BUILD_TYPE=Debug" ^
+  "-BC:\\Users\\danielle\\Documents\\projects\\personal\\tefilat_haderech\\android\\app\\.cxx\\Debug\\3i5a1x65\\x86_64" ^
+  -GNinja ^
+  -Wno-dev ^
+  --no-warn-unused-cli

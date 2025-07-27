@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tefilat_haderech/constants.dart';
+import 'package:tefilat_haderech/l10n/app_localizations.dart';
 import 'package:tefilat_haderech/model/prayer_parameters.dart';
 import 'package:tefilat_haderech/pages/widgets/animated_tile.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AlarmParametersPage extends StatefulWidget {
   AlarmParametersPage({super.key});
@@ -32,7 +32,7 @@ class _AlarmParametersPageState extends State<AlarmParametersPage>
   List<double> slide = [10, 30, 50, 90];
 
   //UI
-  final int pickerStep = 5;
+  final int pickerStep = 1; //FIXME change to 5
 
   @override
   void initState() {

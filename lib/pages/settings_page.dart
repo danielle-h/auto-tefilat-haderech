@@ -7,10 +7,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:tefilat_haderech/constants.dart';
+import 'package:tefilat_haderech/l10n/app_localizations.dart';
 import 'package:tefilat_haderech/model/app_model_notifier.dart';
 import 'package:tefilat_haderech/styles.dart';
 import 'package:uri_to_file/uri_to_file.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/link.dart';
 
 import 'widgets/app_dialog.dart';

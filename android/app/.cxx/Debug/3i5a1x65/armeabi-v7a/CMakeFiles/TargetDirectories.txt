@@ -1,0 +1,2 @@
+C:/Users/danielle/Documents/projects/personal/tefilat_haderech/android/app/.cxx/Debug/3i5a1x65/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/danielle/Documents/projects/personal/tefilat_haderech/android/app/.cxx/Debug/3i5a1x65/armeabi-v7a/CMakeFiles/rebuild_cache.dir

@@ -3,13 +3,20 @@ allprojects {
         google()
         mavenCentral()
     }
+
+    afterEvaluate { project ->
+        if (project.hasProperty("android") && project.android.hasProperty("namespace")) {
+            if (!project.android.namespace) {
+                project.android.namespace = project.group ?: "com.honeystone.${project.name}"
+            }
+        }
+    }
 }
 
 rootProject.buildDir = '../build'
+
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
     project.evaluationDependsOn(':app')
 }
 

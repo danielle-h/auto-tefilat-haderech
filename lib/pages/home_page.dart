@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:tefilat_haderech/l10n/app_localizations.dart';
 import 'package:tefilat_haderech/model/app_model_notifier.dart';
 import 'package:tefilat_haderech/pages/alarm_params_page.dart';
 import 'package:tefilat_haderech/model/prayer_parameters.dart';
 import 'package:tefilat_haderech/pages/settings_page.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../constants.dart';
 import 'widgets/animated_tile.dart';
@@ -69,9 +69,9 @@ class _HomePageState extends State<HomePage>
       //cancel notification and reset home page in one minute
       //TODO add warning when uploading custom file
       print("alarm: $event");
-      Future.delayed(Duration(minutes: 2), () {
+      Future.delayed(Duration(minutes: 2), () async {
         print("delayed");
-        checkForAlarms();
+        await checkForAlarms();
       });
     });
   }
@@ -104,12 +104,12 @@ class _HomePageState extends State<HomePage>
         });
       }
     });
-    checkForAlarms();
+    await checkForAlarms();
   }
 
   //check for existing alarms
-  void checkForAlarms() {
-    AlarmSettings? previousAlarm = Alarm.getAlarm(Constants.alarmId);
+  Future<void> checkForAlarms() async {
+    AlarmSettings? previousAlarm = await Alarm.getAlarm(Constants.alarmId);
     print("previous alarm: $previousAlarm");
     if (previousAlarm != null &&
         previousAlarm.dateTime
@@ -137,9 +137,9 @@ class _HomePageState extends State<HomePage>
             "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
       } else {
         print(
-            "/data/user/0/com.example.tefilat_haderech/app_flutter/custom.mp3");
+            "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3");
         await player.setFilePath(
-            "/data/user/0/com.example.tefilat_haderech/app_flutter/custom.mp3");
+            "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3");
       }
       setState(() {
         isPlaying = true;
@@ -171,10 +171,10 @@ class _HomePageState extends State<HomePage>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
       print("state: resumed");
-      checkForAlarms();
+      await checkForAlarms();
     }
     super.didChangeAppLifecycleState(state);
   }
@@ -334,22 +334,28 @@ class _HomePageState extends State<HomePage>
                               "${parameters.prayerType.name}-${parameters.voiceType.name}-${parameters.returnToday.name}.mp3";
                           if (context.mounted) {
                             final alarmSettings = AlarmSettings(
+                              warningNotificationOnKill: true,
                               id: Constants.alarmId,
                               androidFullScreenIntent: false,
                               dateTime: DateTime.now().add(parameters.time),
                               assetAudioPath: parameters.voiceType ==
                                       VoiceType.custom
-                                  ? "/data/user/0/com.example.tefilat_haderech/app_flutter/custom.mp3"
+                                  ? "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3"
                                   : 'assets/sounds/$filename',
                               loopAudio: false,
                               vibrate: false,
-                              volume: parameters.volume,
-                              fadeDuration: 0,
-                              notificationTitle: AppLocalizations.of(context)!
-                                  .notification_title,
-                              notificationBody: AppLocalizations.of(context)!
-                                  .notification_body,
-                              enableNotificationOnKill: true,
+                              volumeSettings: VolumeSettings.fixed(
+                                volume: parameters.volume,
+                                volumeEnforced: false,
+                              ),
+                              notificationSettings: NotificationSettings(
+                                title: AppLocalizations.of(context)!
+                                    .notification_title,
+                                body: AppLocalizations.of(context)!
+                                    .notification_body,
+                                stopButton: 'Stop',
+                                // icon and iconColor optional
+                              ),
                             );
                             //verify permissions
                             bool gotPermission =
