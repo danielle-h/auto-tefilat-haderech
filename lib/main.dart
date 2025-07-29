@@ -1,5 +1,6 @@
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tefilat_haderech/constants.dart';
 import 'package:tefilat_haderech/l10n/app_localizations.dart';
@@ -9,6 +10,10 @@ import 'pages/home_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Alarm.init();
+  // Enter fullscreen immersive mode
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.immersiveSticky,
+  );
   runApp(ChangeNotifierProvider(
       create: (context) => AppModelProvider(), child: const MyApp()));
 }
