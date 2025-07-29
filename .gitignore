@@ -60,3 +60,8 @@ windows/runner/flutter_window.cpp
 windows/flutter/generated_plugin_registrant.h
 linux/flutter/generated_plugin_registrant.h
 sentry-wizard.exe
+.aider.chat.history.md
+.aider.input.history
+.aider.tags.cache.v4/cache.db
+.aider.tags.cache.v4/cache.db-shm
+.aider.tags.cache.v4/cache.db-wal
