@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:alarm/alarm.dart';
+import 'package:alarm/utils/alarm_set.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -29,7 +30,7 @@ class _HomePageState extends State<HomePage>
   bool isPlaying = false; //is it reciting now?
 
   //alarms
-  late final StreamSubscription<AlarmSettings> subscription;
+  late final StreamSubscription<AlarmSet> subscription;
   bool alarmExists = false;
 
   //model
@@ -66,9 +67,10 @@ class _HomePageState extends State<HomePage>
     //check alarms on resume
     WidgetsBinding.instance.addObserver(this);
     //alarms
-    subscription = Alarm.ringStream.stream.listen((event) {
+    subscription = Alarm.ringing.listen((event) {
       //cancel notification and reset home page in one minute
       print("alarm: $event");
+      audioHandler.play();
       Future.delayed(Duration(minutes: 2), () async {
         print("delayed");
         await checkForAlarms();
@@ -328,10 +330,11 @@ class _HomePageState extends State<HomePage>
                               id: Constants.alarmId,
                               androidFullScreenIntent: false,
                               dateTime: DateTime.now().add(parameters.time),
-                              assetAudioPath: parameters.voiceType ==
-                                      VoiceType.custom
-                                  ? "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3"
-                                  : 'assets/sounds/$filename',
+                              assetAudioPath: 'assets/sounds/blank.mp3',
+                              // assetAudioPath: parameters.voiceType ==
+                              //         VoiceType.custom
+                              //     ? "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3"
+                              //     : 'assets/sounds/$filename',
                               loopAudio: false,
                               vibrate: false,
                               volumeSettings: VolumeSettings.fixed(

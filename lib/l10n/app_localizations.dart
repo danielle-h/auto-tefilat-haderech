@@ -215,7 +215,7 @@ abstract class AppLocalizations {
   /// No description provided for @choose_file.
   ///
   /// In en, this message translates to:
-  /// **'Choose file (up to 2 minutes)'**
+  /// **'Choose file (up to 1.5 minutes)'**
   String get choose_file;
 
   /// No description provided for @female_name.
