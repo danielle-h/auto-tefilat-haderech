@@ -29,6 +29,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   alarm: ^5.1.4
+  audio_service: ^0.18.18
   cupertino_icons: ^1.0.2
   file_picker: ^10.2.0
   flutter:
@@ -89,3 +90,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+sentry:
+  upload_debug_symbols: true
+  upload_source_maps: true
+  project: tefilat_haderech
+  org: honeystone

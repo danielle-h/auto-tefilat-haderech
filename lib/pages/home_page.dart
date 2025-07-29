@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:alarm/alarm.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -25,7 +26,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   //for reciting now
-  final player = AudioPlayer();
   bool isPlaying = false; //is it reciting now?
 
   //alarms
@@ -39,6 +39,7 @@ class _HomePageState extends State<HomePage>
   late AnimationController animationController;
   late Animation<double> animation;
   List<double> slide = [10, 30, 50, 90];
+  late MyAudioHandler audioHandler;
 
   //texts
   final String ashkenaz_returnToday =
@@ -59,7 +60,7 @@ class _HomePageState extends State<HomePage>
         parent: animationController, curve: Curves.fastOutSlowIn);
     startAnimation();
     //initialize player
-    initPlayer();
+    initAudioService();
 
     super.initState();
     //check alarms on resume
@@ -93,17 +94,32 @@ class _HomePageState extends State<HomePage>
     animationController.forward();
   }
 
-  Future<void> initPlayer() async {
+  Future<void> initAudioService() async {
     //this is for reciting now only. in alarm it's handled by the alarm package
-    player.playerStateStream.listen((playerState) {
-      print("playerstate: ${playerState.processingState}");
-      if (playerState.processingState == ProcessingState.completed) {
-        setState(() {
-          isPlaying = false;
-        });
-      }
-    });
+
     await checkForAlarms();
+    audioHandler = await AudioService.init(
+      builder: () => MyAudioHandler(), //TODO should be in main?
+      config: AudioServiceConfig(
+        androidNotificationChannelId: 'com.honeystone.tefilat_haderech.channel',
+        androidNotificationChannelName: 'Traveler\'s Prayer',
+        //  androidNotificationOngoing: true,
+        androidStopForegroundOnPause: false,
+      ),
+    );
+    audioHandler.playbackState.listen((playerState) {
+      print("playerstate: ${playerState.processingState}");
+      setState(() {
+        isPlaying = playerState.playing;
+      });
+    });
+    if (!mounted) return;
+    AppModelProvider appModel =
+        Provider.of<AppModelProvider>(context, listen: false);
+    audioHandler.config(
+      appModel.getVoice(),
+      prayerParameters,
+    );
   }
 
   //check for existing alarms
@@ -123,47 +139,15 @@ class _HomePageState extends State<HomePage>
     });
   }
 
-  //recite now
-  void readAloud(VoiceType voiceType) async {
-    if (!isPlaying) {
-      print("home voice: $voiceType");
-      String voice = voiceType.name;
-
-      if (voiceType != VoiceType.custom) {
-        print(
-            "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
-        await player.setAsset(
-            "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
-      } else {
-        print(
-            "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3");
-        await player.setFilePath(
-            "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3");
-      }
-      setState(() {
-        isPlaying = true;
-      });
-      print("loop mode: ${player.loopMode}");
-      player.seek(Duration.zero);
-
-      player.play();
-    }
-  }
-
   //stop reciting now. This is not connected to alarms
   void stop() {
-    if (isPlaying) {
-      player.stop();
-      setState(() {
-        isPlaying = false;
-      });
-    }
+    audioHandler.stop();
   }
 
   @override
   void dispose() {
     animationController.dispose();
-    player.dispose();
+    audioHandler.dispose();
     WidgetsBinding.instance.removeObserver(this);
     subscription.cancel();
     super.dispose();
@@ -180,7 +164,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    AppModelProvider appModel = Provider.of<AppModelProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.home_page_title),
@@ -191,6 +174,15 @@ class _HomePageState extends State<HomePage>
                 context,
                 MaterialPageRoute(builder: (context) => SettingsPage()),
               );
+              if (!context.mounted) return;
+              //reconfigure audio handler with new settings
+              AppModelProvider appModel =
+                  Provider.of<AppModelProvider>(context, listen: false);
+              audioHandler.config(
+                appModel.getVoice(),
+                prayerParameters,
+              );
+              //restart animation
               startAnimation();
             },
             icon: Icon(Icons.settings),
@@ -264,8 +256,7 @@ class _HomePageState extends State<HomePage>
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    print("onpressed: ${appModel.getVoice()}");
-                    isPlaying ? stop() : readAloud(appModel.getVoice());
+                    isPlaying ? stop() : audioHandler.play();
                   },
                   style: isPlaying
                       ? ElevatedButton.styleFrom(
@@ -388,4 +379,85 @@ class _HomePageState extends State<HomePage>
       ),
     );
   }
+}
+
+class MyAudioHandler extends BaseAudioHandler {
+  // mix in default seek callback implementations
+
+  final player = AudioPlayer();
+
+  MyAudioHandler() {
+    playbackState.add(playbackState.value.copyWith(
+      controls: [
+        MediaControl.play,
+        MediaControl.stop,
+      ],
+      androidCompactActionIndices: [0, 1], // [Play, Pause] in compact view
+    ));
+
+    player.playerStateStream.listen((state) {
+      final playing = state.playing;
+      final processingState = state.processingState;
+
+      final audioState = playbackState.value.copyWith(
+        controls: [
+          if (!playing) MediaControl.play,
+          if (playing) MediaControl.stop,
+          //MediaControl.stop,
+        ],
+        playing: playing,
+        processingState: {
+          ProcessingState.idle: AudioProcessingState.idle,
+          ProcessingState.loading: AudioProcessingState.loading,
+          ProcessingState.buffering: AudioProcessingState.buffering,
+          ProcessingState.ready: AudioProcessingState.ready,
+          ProcessingState.completed: AudioProcessingState.completed,
+        }[processingState]!,
+        androidCompactActionIndices: [0], // Only one button in compact view
+      );
+
+      playbackState.add(audioState);
+    });
+  }
+
+  void dispose() {
+    player.dispose();
+  }
+
+  Future<void> config(
+      VoiceType voiceType, PrayerParameters prayerParameters) async {
+    // Configure the player with the voice type and prayer parameters
+    // This is just a placeholder for actual configuration logic
+    print(
+        "Configuring audio handler with voice: $voiceType and parameters: $prayerParameters");
+    String voice = voiceType.name;
+
+    if (voiceType != VoiceType.custom) {
+      print(
+          "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
+      await player.setAsset(
+          "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
+    } else {
+      print(
+          "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3");
+      await player.setFilePath(
+          "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3");
+    }
+    mediaItem.add(
+      MediaItem(
+        id: 'tefila',
+        title: 'תפילת הדרך',
+        duration: null, // 👈 Important: no progress bar
+      ),
+    );
+  }
+
+  // The most common callbacks:
+  Future<void> play() {
+    player.seek(Duration.zero);
+    return player.play();
+  }
+
+  Future<void> pause() => player.pause();
+  Future<void> stop() => player.stop();
 }
