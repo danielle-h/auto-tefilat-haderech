@@ -60,3 +60,4 @@ windows/runner/flutter_window.cpp
 windows/flutter/generated_plugin_registrant.h
 linux/flutter/generated_plugin_registrant.h
 sentry-wizard.exe
+.aider*

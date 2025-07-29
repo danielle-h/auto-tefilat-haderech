@@ -1,0 +1,6 @@
+<actions xmlns:tools="http://schemas.android.com/tools">
+    <action intentName="actions.intent.PLAY_MEDIA">
+        <fulfillment urlTemplate="tefilathaderech://play" />
+        <parameter name="media" />
+    </action>
+</actions>

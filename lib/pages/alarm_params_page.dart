@@ -32,7 +32,7 @@ class _AlarmParametersPageState extends State<AlarmParametersPage>
   List<double> slide = [10, 30, 50, 90];
 
   //UI
-  final int pickerStep = 1; //FIXME change to 5
+  final int pickerStep = 5;
 
   @override
   void initState() {

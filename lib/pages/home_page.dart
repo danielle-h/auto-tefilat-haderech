@@ -1,10 +1,15 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:alarm/alarm.dart';
+import 'package:alarm/utils/alarm_set.dart';
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:tefilat_haderech/audio_service.dart';
+import 'package:tefilat_haderech/deep_link_manager.dart';
 import 'package:tefilat_haderech/l10n/app_localizations.dart';
 import 'package:tefilat_haderech/model/app_model_notifier.dart';
 import 'package:tefilat_haderech/pages/alarm_params_page.dart';
@@ -15,8 +20,9 @@ import '../constants.dart';
 import 'widgets/animated_tile.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key, required this.prayerType});
+  HomePage({super.key, required this.prayerType, required this.audioService});
   final PrayerType prayerType; //For the future, not really used yet
+  final AudioServiceSingleton audioService;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -25,11 +31,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   //for reciting now
-  final player = AudioPlayer();
+  late AudioServiceSingleton audioService;
   bool isPlaying = false; //is it reciting now?
 
   //alarms
-  late final StreamSubscription<AlarmSettings> subscription;
+  late final StreamSubscription<AlarmSet> subscription;
   bool alarmExists = false;
 
   //model
@@ -40,6 +46,10 @@ class _HomePageState extends State<HomePage>
   late Animation<double> animation;
   List<double> slide = [10, 30, 50, 90];
 
+  //deep links
+  final AppLinks _appLinks = AppLinks();
+  DeepLinkManager deepLinkManager = DeepLinkManager();
+
   //texts
   final String ashkenaz_returnToday =
       "יְהִי רָצוֹן מִלְּפָנֶיךָ ה' אֱלֹהֵנוּ וֵאֱלֹהֵי אֲבוֹתֵינוּ, שֶׁתּוֹלִיכֵנוּ לְשָׁלוֹם וְתַצְעִידֵנוּ לְשָׁלוֹם, וְתִסְמְכֵנוּ לְשָׁלוֹם, וְתַנְחֵנוּ אֶל מְחוֹז חֶפְצֵנוּ לְחַיִּים וְלְשִּׂמְחָה ולְשָּׁלוֹם, וְתַחְזִירֵנוּ לְשָׁלוֹם וְתַצִּילֵנוּ מִכַּף כׇּל אוֹיֵב וְאוֹרֵב בַּדֶּרֶךְ וּמִכׇּל מִינֵי פֻּרְעָנֻיּוֹת הַמִּתְרַגְּשׁוֹת לָבוֹא לָעוֹלָם, וְתִשְׁלַח בְּרָכָה בְּמַעֲשֵׂה יָדֵינוּ. וְתִתְנְנוֹ לְחֵן וּלְחֶסֶד וּלְרַחֲמִים בְּעֵינֶיךָ וּבְעֵינֵי כׇּל רוֹאֵינוּ, וְתִשְׁמַע קוֹל תַּחֲנוּנֵינוּ. כִּי אֵל שׁוֹמֵעַ תְּפִלָּה וְתַחֲנוּן אַתָּה. בָּרוּךְ אַתָּה ה' שׁוֹמֵעַ תְּפִלָּה.";
@@ -49,6 +59,7 @@ class _HomePageState extends State<HomePage>
 
   @override
   void initState() {
+    print("in initstate");
     //init model
     final appModel = Provider.of<AppModelProvider>(context, listen: false);
     appModel.initModel();
@@ -60,12 +71,13 @@ class _HomePageState extends State<HomePage>
     startAnimation();
     //initialize player
     initPlayer();
-
+    // Start listening to deep links
+    deepLinkManager.init(_appLinks, _handleUri);
     super.initState();
     //check alarms on resume
     WidgetsBinding.instance.addObserver(this);
     //alarms
-    subscription = Alarm.ringStream.stream.listen((event) {
+    subscription = Alarm.ringing.listen((event) {
       //cancel notification and reset home page in one minute
       print("alarm: $event");
       Future.delayed(Duration(minutes: 2), () async {
@@ -73,6 +85,17 @@ class _HomePageState extends State<HomePage>
         await checkForAlarms();
       });
     });
+
+    print("HOME INIT STATE");
+  }
+
+  Future<void> _handleUri(Uri uri) async {
+    print("Received URI: $uri");
+    if (uri.scheme == 'tefilathaderech' && uri.host == 'play') {
+      final appModel = Provider.of<AppModelProvider>(context, listen: false);
+      final voice = appModel.getVoice();
+      await readAloud(voice);
+    }
   }
 
   Future<bool> checkAndroidScheduleExactAlarmPermission() async {
@@ -94,15 +117,21 @@ class _HomePageState extends State<HomePage>
   }
 
   Future<void> initPlayer() async {
+    audioService = widget.audioService;
     //this is for reciting now only. in alarm it's handled by the alarm package
-    player.playerStateStream.listen((playerState) {
-      print("playerstate: ${playerState.processingState}");
-      if (playerState.processingState == ProcessingState.completed) {
-        setState(() {
-          isPlaying = false;
-        });
-      }
-    });
+    // audioService.player.playerStateStream.listen((playerState) {
+    //   print("playerstate: ${playerState.processingState}");
+    //   if (playerState.processingState == ProcessingState.completed) {
+    //     setState(() {
+    //       isPlaying = false;
+    //     });
+    //   }
+    //   // if (playerState.processingState == ProcessingState.ready) {
+    //   //   setState(() {
+    //   //     isPlaying = true;
+    //   //   });
+    //   // }
+    // });
     await checkForAlarms();
   }
 
@@ -124,48 +153,59 @@ class _HomePageState extends State<HomePage>
   }
 
   //recite now
-  void readAloud(VoiceType voiceType) async {
+  Future<void> readAloud(VoiceType voiceType) async {
+    print("Reading aloud, time: ${DateTime.now()}");
+
     if (!isPlaying) {
       print("home voice: $voiceType");
       String voice = voiceType.name;
-
-      if (voiceType != VoiceType.custom) {
-        print(
-            "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
-        await player.setAsset(
-            "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
-      } else {
-        print(
-            "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3");
-        await player.setFilePath(
-            "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3");
-      }
-      setState(() {
+      try {
+        if (voiceType != VoiceType.custom) {
+          print(
+              "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
+          await audioService.setAsset(
+              "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
+        } else {
+          print(
+              "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3");
+          await audioService.setFile(
+              "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3");
+        }
+        //setState(() {
         isPlaying = true;
-      });
-      print("loop mode: ${player.loopMode}");
-      player.seek(Duration.zero);
+        print("HOME setstate isPlaying: $isPlaying");
+        //});
+        //print("loop mode: ${player.loopMode}");
+        audioService.player.seek(Duration.zero);
 
-      player.play();
+        audioService.player.play();
+      } catch (e) {
+        print("Error playing audio: $e");
+        if (mounted) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("Error playing audio: $e")));
+        }
+      }
     }
   }
 
   //stop reciting now. This is not connected to alarms
   void stop() {
-    if (isPlaying) {
-      player.stop();
-      setState(() {
-        isPlaying = false;
-      });
-    }
+    //if (isPlaying) {
+    audioService.player.stop();
+    //setState(() {
+    isPlaying = false;
+    //});
+    //}
   }
 
   @override
   void dispose() {
+    print("HOME DISPOSE");
     animationController.dispose();
-    player.dispose();
+    audioService.dispose();
     WidgetsBinding.instance.removeObserver(this);
-    subscription.cancel();
+    deepLinkManager.dispose();
     super.dispose();
   }
 
@@ -180,7 +220,9 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    print("HOME BUILD");
     AppModelProvider appModel = Provider.of<AppModelProvider>(context);
+    isPlaying = audioService.isPlaying;
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.home_page_title),
@@ -262,22 +304,28 @@ class _HomePageState extends State<HomePage>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    print("onpressed: ${appModel.getVoice()}");
-                    isPlaying ? stop() : readAloud(appModel.getVoice());
-                  },
-                  style: isPlaying
-                      ? ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.secondary,
-                          foregroundColor:
-                              Theme.of(context).colorScheme.onSecondary)
-                      : ElevatedButton.styleFrom(),
-                  child: isPlaying
-                      ? Text(AppLocalizations.of(context)!.stop)
-                      : Text(AppLocalizations.of(context)!.play_now),
-                ),
+                StreamBuilder(
+                    stream: audioService.player.playerStateStream,
+                    builder: (context, asyncSnapshot) {
+                      final playerState = asyncSnapshot.data;
+                      final isPlaying = playerState?.playing ?? false;
+                      return ElevatedButton(
+                        onPressed: () {
+                          print("onpressed: ${appModel.getVoice()}");
+                          isPlaying ? stop() : readAloud(appModel.getVoice());
+                        },
+                        style: isPlaying
+                            ? ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                foregroundColor:
+                                    Theme.of(context).colorScheme.onSecondary)
+                            : ElevatedButton.styleFrom(),
+                        child: isPlaying
+                            ? Text(AppLocalizations.of(context)!.stop)
+                            : Text(AppLocalizations.of(context)!.play_now),
+                      );
+                    }),
                 alarmExists
                     ? ElevatedButton(
                         onPressed: () async {
