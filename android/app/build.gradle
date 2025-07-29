@@ -68,7 +68,7 @@ android {
    buildTypes {
        release {
            // Enables code shrinking, obfuscation, and optimization
-            minifyEnabled true
+            minifyEnabled false
             // Uses ProGuard or R8 for minification
             shrinkResources false
             signingConfig signingConfigs.release
