@@ -42,7 +42,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     AppModelProvider appModel = Provider.of<AppModelProvider>(context);
-    print("settings appmodel voice: ${appModel.getVoice()}");
+    //print("settings appmodel voice: ${appModel.getVoice()}");
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
@@ -71,7 +71,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             //female
                             SimpleDialogOption(
                               onPressed: () {
-                                print("chose female");
+                                //print("chose female");
                                 Navigator.pop(context, Constants.femaleName);
                               },
                               child: Text(
@@ -105,15 +105,14 @@ class _SettingsPageState extends State<SettingsPage> {
                                   PlatformFile file = result.files.first;
                                   final directory =
                                       await getApplicationDocumentsDirectory();
-                                  print("uri: ${file.identifier}");
+                                  //print("uri: ${file.identifier}");
                                   File pickedFile =
                                       await toFile(file.identifier!);
-                                  print("picked file: ${pickedFile.path}");
+                                  //print("picked file: ${pickedFile.path}");
                                   File cachedFile = await pickedFile.copy(
                                       "${directory.path}${Platform.pathSeparator}custom.mp3");
 
-                                  print(
-                                      "files: ${file.name} ${cachedFile.path}");
+                                  //print("files: ${file.name} ${cachedFile.path}");
                                   appModel.updateFilename(file.name);
                                   if (mounted) {
                                     Navigator.pop(context, file.name);
@@ -131,11 +130,11 @@ class _SettingsPageState extends State<SettingsPage> {
                           ],
                         );
                       });
-                  print("settings: $newVoice");
+                  //print("settings: $newVoice");
                   //update voicetype
                   if (newVoice != null) {
                     VoiceType voiceType = Util.string2VoiceType(newVoice);
-                    print("settings: $voiceType");
+                    //print("settings: $voiceType");
                     appModel.updateVoice(voiceType);
                   }
                 },
@@ -166,7 +165,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             //English
                             SimpleDialogOption(
                               onPressed: () {
-                                print("chose english");
+                                //print("chose english");
                                 Navigator.pop(context, AppLocale.en);
                               },
                               child: const Text("English"),
@@ -181,7 +180,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           ],
                         );
                       });
-                  print("settings: $newLocale");
+                  //print("settings: $newLocale");
                   //update voicetype
                   if (newLocale != null) {
                     appModel.updateLocale(newLocale);
@@ -216,8 +215,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                     child: Text(AppLocalizations.of(context)!
                                         .app_code));
                               }),
-                              Text(AppLocalizations.of(context)!.app_contact),
-                              Link(
+                          Text(AppLocalizations.of(context)!.app_contact),
+                          Link(
                               uri: Uri.parse(
                                   "https://danielle-honig.com/contact"),
                               target: LinkTarget.defaultTarget,
@@ -228,7 +227,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                     child: Text(AppLocalizations.of(context)!
                                         .contact_me));
                               }),
-        
                           Text(AppLocalizations.of(context)!.app_website),
                           Link(
                               uri: Uri.parse("https://danielle-honig.com/"),

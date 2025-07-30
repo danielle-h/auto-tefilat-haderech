@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:alarm/alarm.dart';
+import 'package:alarm/utils/alarm_set.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -29,7 +30,7 @@ class _HomePageState extends State<HomePage>
   bool isPlaying = false; //is it reciting now?
 
   //alarms
-  late final StreamSubscription<AlarmSettings> subscription;
+  late final StreamSubscription<AlarmSet> subscription;
   bool alarmExists = false;
 
   //model
@@ -65,11 +66,11 @@ class _HomePageState extends State<HomePage>
     //check alarms on resume
     WidgetsBinding.instance.addObserver(this);
     //alarms
-    subscription = Alarm.ringStream.stream.listen((event) {
-      //cancel notification and reset home page in one minute
-      print("alarm: $event");
+    subscription = Alarm.ringing.listen((event) {
+      //cancel notification and reset home page in two minute
+      //print("alarm: $event");
       Future.delayed(Duration(minutes: 2), () async {
-        print("delayed");
+        //print("delayed");
         await checkForAlarms();
       });
     });
@@ -77,10 +78,10 @@ class _HomePageState extends State<HomePage>
 
   Future<bool> checkAndroidScheduleExactAlarmPermission() async {
     final status = await Permission.scheduleExactAlarm.status;
-    print("status: $status");
+    //print("status: $status");
     if (status.isDenied) {
       final res = await Permission.scheduleExactAlarm.request();
-      print("status: ${res.name}");
+      //print("status: ${res.name}");
 
       return res.isGranted;
     } else {
@@ -109,12 +110,12 @@ class _HomePageState extends State<HomePage>
   //check for existing alarms
   Future<void> checkForAlarms() async {
     AlarmSettings? previousAlarm = await Alarm.getAlarm(Constants.alarmId);
-    print("previous alarm: $previousAlarm");
+    //print("previous alarm: $previousAlarm");
     if (previousAlarm != null &&
         previousAlarm.dateTime
             .isBefore(DateTime.now().subtract(const Duration(minutes: 1)))) {
       //might be playing now
-      print("stopping alarm");
+      //print("stopping alarm");
       Alarm.stop(Constants.alarmId); //stop if not stopped already
       previousAlarm = null;
     }
@@ -130,20 +131,18 @@ class _HomePageState extends State<HomePage>
       String voice = voiceType.name;
 
       if (voiceType != VoiceType.custom) {
-        print(
-            "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
+        // print(
+        //     "${Constants.assetPath}ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
         await player.setAsset(
-            "assets/sounds/ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
+            "${Constants.assetPath}ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
       } else {
-        print(
-            "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3");
-        await player.setFilePath(
-            "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3");
+        //print(Constants.customFilePath);
+        await player.setFilePath(Constants.customFilePath);
       }
       setState(() {
         isPlaying = true;
       });
-      print("loop mode: ${player.loopMode}");
+      //print("loop mode: ${player.loopMode}");
       player.seek(Duration.zero);
 
       player.play();
@@ -172,7 +171,7 @@ class _HomePageState extends State<HomePage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
-      print("state: resumed");
+      //print("state: resumed");
       await checkForAlarms();
     }
     super.didChangeAppLifecycleState(state);
@@ -264,7 +263,7 @@ class _HomePageState extends State<HomePage>
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    print("onpressed: ${appModel.getVoice()}");
+                    //print("onpressed: ${appModel.getVoice()}");
                     isPlaying ? stop() : readAloud(appModel.getVoice());
                   },
                   style: isPlaying
@@ -337,10 +336,10 @@ class _HomePageState extends State<HomePage>
                               id: Constants.alarmId,
                               androidFullScreenIntent: false,
                               dateTime: DateTime.now().add(parameters.time),
-                              assetAudioPath: parameters.voiceType ==
-                                      VoiceType.custom
-                                  ? "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3"
-                                  : 'assets/sounds/$filename',
+                              assetAudioPath:
+                                  parameters.voiceType == VoiceType.custom
+                                      ? Constants.customFilePath
+                                      : '${Constants.assetPath}$filename',
                               loopAudio: false,
                               vibrate: false,
                               volumeSettings: VolumeSettings.fixed(

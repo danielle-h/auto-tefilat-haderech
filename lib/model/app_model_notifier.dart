@@ -30,7 +30,7 @@ class AppModelProvider extends ChangeNotifier {
       initialized = true;
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String defaultLocale = Platform.localeName;
-      print("platform locale: $defaultLocale");
+      //"platform locale: $defaultLocale");
       if (defaultLocale.startsWith("en")) {
         defaultLocale = "en";
       } else if (defaultLocale.startsWith("he")) {
@@ -45,12 +45,12 @@ class AppModelProvider extends ChangeNotifier {
       _locale = (prefs.getString(Constants.locale) ?? defaultLocale);
       _appVoice = VoiceType.values.firstWhere((element) =>
           element.name == (prefs.getString(Constants.voiceType) ?? "female"));
-      print("appmodel $_appVoice");
+      //print("appmodel $_appVoice");
       _filename = prefs.getString(Constants.filename) ?? "";
-      print("initModel");
+      //print("initModel");
       notifyListeners();
 
-      print("initmodel original ${prefs.getString(Constants.voiceType)}");
+      //print("initmodel original ${prefs.getString(Constants.voiceType)}");
     }
   }
 
@@ -64,20 +64,20 @@ class AppModelProvider extends ChangeNotifier {
         prefs.setBool(Constants.isDarkTheme, _appTheme == AppTheme.darkTheme());
       },
     );
-    print("togglettheme");
+    //print("togglettheme");
 
     notifyListeners();
   }
 
   void updateVoice(VoiceType newVoice) {
-    print("updateVoice appmodel: $newVoice");
+    //print("updateVoice appmodel: $newVoice");
     _appVoice = newVoice;
     notifyListeners();
 
     SharedPreferences.getInstance().then(
       (prefs) {
         prefs.setString(Constants.voiceType, _appVoice.name);
-        print("appmodel saving $_appVoice");
+        //print("appmodel saving $_appVoice");
       },
     );
   }
@@ -99,7 +99,7 @@ class AppModelProvider extends ChangeNotifier {
         prefs.setString(Constants.filename, newFile);
       },
     );
-    print("updateFilename $_filename");
+    //print("updateFilename $_filename");
     notifyListeners();
   }
 }

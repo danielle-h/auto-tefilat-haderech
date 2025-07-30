@@ -212,14 +212,14 @@ class _AlarmParametersPageState extends State<AlarmParametersPage>
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      print("numMinutes: $numMinutes");
+                      //print("numMinutes: $numMinutes");
                       PrayerParameters parameters = PrayerParameters();
                       parameters.prayerType = prayerType;
                       parameters.returnToday = returnToday;
                       parameters.time = Duration(minutes: numMinutes);
                       parameters.voiceType = voiceType;
                       parameters.volume = volume;
-                      print(parameters.time);
+                      //print(parameters.time);
                       Navigator.pop(context, parameters);
                       //parameters.prayerType =
                     },
