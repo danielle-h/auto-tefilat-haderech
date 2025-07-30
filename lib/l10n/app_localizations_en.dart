@@ -69,7 +69,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get which_voice => 'Which voice';
 
   @override
-  String get choose_file => 'Choose file (up to 2 minutes)';
+  String get choose_file => 'Choose file (up to 1.5 minutes)';
 
   @override
   String get female_name => 'Danielle';
@@ -152,4 +152,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contact_me => 'Contact me';
+
+  @override
+  String get no_notification_permission =>
+      'No notification will be shown when prayer is recited. You can enable permissions later in Settings.';
 }

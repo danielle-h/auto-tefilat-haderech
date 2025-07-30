@@ -8,7 +8,8 @@ import 'package:tefilat_haderech/model/prayer_parameters.dart';
 import 'package:tefilat_haderech/pages/widgets/animated_tile.dart';
 
 class AlarmParametersPage extends StatefulWidget {
-  AlarmParametersPage({super.key});
+  AlarmParametersPage({super.key, required this.parameters});
+  PrayerParameters parameters;
 
   @override
   State<AlarmParametersPage> createState() => _AlarmParametersPageState();
@@ -36,12 +37,18 @@ class _AlarmParametersPageState extends State<AlarmParametersPage>
 
   @override
   void initState() {
-    numMinutes = pickerStep; // have the default be the same as the first step.
     animationController = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
     animation = CurvedAnimation(
         parent: animationController, curve: Curves.fastOutSlowIn);
     animationController.forward();
+    setState(() {
+      numMinutes = widget.parameters.time.inMinutes;
+      prayerType = widget.parameters.prayerType;
+      voiceType = widget.parameters.voiceType;
+      returnToday = widget.parameters.returnToday;
+      volume = widget.parameters.volume;
+    });
     super.initState();
   }
 
@@ -86,6 +93,8 @@ class _AlarmParametersPageState extends State<AlarmParametersPage>
                               numMinutes = (newNum + 1) * pickerStep;
                             },
                             itemExtent: 30,
+                            scrollController: FixedExtentScrollController(
+                                initialItem: (numMinutes ~/ pickerStep) - 1),
                             children: List.generate(
                                 24,
                                 (index) => Text(AppLocalizations.of(context)!

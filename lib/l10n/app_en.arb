@@ -24,7 +24,7 @@
   "settings": "Settings",
   "voice": "Voice",
   "which_voice": "Voice type",
-  "choose_file": "Choose file (up to 2 minutes)",
+  "choose_file": "Choose file (up to 1.5 minutes)",
   "female_name": "Danielle",
   "male_name": "Samuel",
   "custom_name": "My file",
@@ -57,5 +57,6 @@
   "no_permission": "Permission not granted, setting alarm failed",
   "rate_app": "Rate and review in the app store",
   "app_contact": "Questions? Problems? Suggestions?",
-  "contact_me": "Contact me"
+  "contact_me": "Contact me",
+  "no_notification_permission": "No notification will be shown when prayer is recited. You can enable permissions later in Settings."
 }

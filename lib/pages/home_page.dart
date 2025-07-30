@@ -52,7 +52,9 @@ class _HomePageState extends State<HomePage>
   void initState() {
     //init model
     final appModel = Provider.of<AppModelProvider>(context, listen: false);
-    appModel.initModel();
+    appModel.initModel().then((value) {
+      handleNotificationPermission();
+    });
     //animations
     animationController = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
@@ -87,6 +89,38 @@ class _HomePageState extends State<HomePage>
     } else {
       return true;
     }
+  }
+
+  void handleNotificationPermission() async {
+    final model = Provider.of<AppModelProvider>(context, listen: false);
+
+    final wasRequested = model.getRequestedPermission();
+    print("wasRequested: $wasRequested");
+    //if already requested, no need to ask again
+    if (wasRequested) {
+      return;
+    }
+    final granted = await checkNotificationPermission();
+    model.updateRequestedPermission(true);
+    //print("notification status: $status");
+    if (!granted && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+              Text(AppLocalizations.of(context)!.no_notification_permission)));
+    }
+  }
+
+  static Future<bool> checkNotificationPermission() async {
+    final status = await Permission.notification.status;
+    if (status.isDenied) {
+      //_log.info('Requesting notification permission...');
+      final res = await Permission.notification.request();
+      // _log.info(
+      //   'Notification permission ${res.isGranted ? '' : 'not '}granted',
+      // );
+      return res.isGranted;
+    }
+    return true;
   }
 
   void startAnimation() {
@@ -315,7 +349,7 @@ class _HomePageState extends State<HomePage>
                           PrayerParameters? parameters = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AlarmParametersPage()));
+                                  builder: (context) => AlarmParametersPage(parameters: appModel.getPrayerParameters())));
                           startAnimation();
                           if (parameters == null) {
                             if (mounted) {
@@ -328,6 +362,7 @@ class _HomePageState extends State<HomePage>
                             return;
                           }
                           print(parameters);
+                          appModel.updatePrayerParameters(parameters);
                           String filename =
                               "${parameters.prayerType.name}-${parameters.voiceType.name}-${parameters.returnToday.name}.mp3";
                           if (context.mounted) {
@@ -358,6 +393,7 @@ class _HomePageState extends State<HomePage>
                             //verify permissions
                             bool gotPermission =
                                 await checkAndroidScheduleExactAlarmPermission();
+                            print("got permission: $gotPermission");
                             if (!context.mounted) {
                               return;
                             }

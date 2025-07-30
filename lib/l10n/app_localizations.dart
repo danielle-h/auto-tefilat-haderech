@@ -215,7 +215,7 @@ abstract class AppLocalizations {
   /// No description provided for @choose_file.
   ///
   /// In en, this message translates to:
-  /// **'Choose file (up to 2 minutes)'**
+  /// **'Choose file (up to 1.5 minutes)'**
   String get choose_file;
 
   /// No description provided for @female_name.
@@ -373,6 +373,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Contact me'**
   String get contact_me;
+
+  /// No description provided for @no_notification_permission.
+  ///
+  /// In en, this message translates to:
+  /// **'No notification will be shown when prayer is recited. You can enable permissions later in Settings.'**
+  String get no_notification_permission;
 }
 
 class _AppLocalizationsDelegate

@@ -14,8 +14,11 @@ class Constants {
   static const String maleName = "שמואל";
   static const String customName = "קובץ שלי";
   static const int alarmId = 42; //the answer to all questions.
-  static const String customFilePath = "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3";
+  static const String customFilePath =
+      "/data/user/0/com.honeystone.tefilat_haderech/app_flutter/custom.mp3";
   static const String assetPath = "assets/sounds/";
+
+  static String prayerParameters = "prayerParameters";
 }
 
 enum VoiceType { female, male, custom }

@@ -68,7 +68,7 @@ class AppLocalizationsHe extends AppLocalizations {
   String get which_voice => 'איזה קול';
 
   @override
-  String get choose_file => 'לבחור קובץ (עד 2 דקות)';
+  String get choose_file => 'לבחור קובץ (עד 1.5 דקות)';
 
   @override
   String get female_name => 'תהילה';
@@ -118,13 +118,13 @@ class AppLocalizationsHe extends AppLocalizations {
   String get app_code => 'צפו בקוד';
 
   @override
-  String get app_website => 'יש עוד דברים מעניינים באתר שלי';
+  String get app_website => 'עוד דברים מעניינים:';
 
   @override
   String get my_website => 'אתר שלי';
 
   @override
-  String get app_coffee => 'אם אהבתם מוזמנים לקנות לי שוקו';
+  String get app_coffee => 'אהבתם?';
 
   @override
   String get buy_me_a_chocolate => 'קנו לי שוקו';
@@ -149,4 +149,8 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get contact_me => 'צרו קשר';
+
+  @override
+  String get no_notification_permission =>
+      'לא תוצג התראה כאשר התפילה תיאמר. ניתן להפעיל הרשאות מאוחר יותר דרך ההגדרות.';
 }
