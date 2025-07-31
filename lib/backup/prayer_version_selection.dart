@@ -25,10 +25,10 @@ class _PrayerVersionSelectionState extends State<PrayerVersionSelection> {
     await prefs.setInt(Constants.prayerVersion, selectedVersion.index);
     await prefs.setBool(Constants.firstTimeUse, false);
     if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage(prayerType: selectedVersion,)),
-      );
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => HomePage(prayerType: selectedVersion,)),
+      // );
     }
   }
 

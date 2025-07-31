@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tefilat_haderech/constants.dart';
 import 'package:tefilat_haderech/l10n/app_localizations.dart';
 import 'package:tefilat_haderech/model/app_model_notifier.dart';
+import 'package:tefilat_haderech/services/audio_service_singleton.dart';
 import 'pages/home_page.dart';
 
 void main() async {
@@ -21,6 +22,9 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  AudioServiceSingleton get audioService =>
+      AudioServiceSingleton.instance; // Access the singleton instance
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -34,7 +38,8 @@ class MyApp extends StatelessWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       theme: appModel.getTheme(),
       locale: Locale(appModel.getLocale()),
-      home: HomePage(prayerType: PrayerType.ashkenaz),
+      home:
+          HomePage(prayerType: PrayerType.ashkenaz, audioService: audioService),
       // ),
     );
   }

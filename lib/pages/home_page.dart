@@ -11,13 +11,15 @@ import 'package:tefilat_haderech/model/app_model_notifier.dart';
 import 'package:tefilat_haderech/pages/alarm_params_page.dart';
 import 'package:tefilat_haderech/model/prayer_parameters.dart';
 import 'package:tefilat_haderech/pages/settings_page.dart';
+import 'package:tefilat_haderech/services/audio_service_singleton.dart';
 
 import '../constants.dart';
 import 'widgets/animated_tile.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key, required this.prayerType});
+  HomePage({super.key, required this.prayerType, required this.audioService});
   final PrayerType prayerType; //For the future, not really used yet
+  final AudioServiceSingleton audioService;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -26,8 +28,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   //for reciting now
-  final player = AudioPlayer();
+  //final player = AudioPlayer();
   bool isPlaying = false; //is it reciting now?
+  late AudioServiceSingleton audioService;
 
   //alarms
   late final StreamSubscription<AlarmSet> subscription;
@@ -129,15 +132,16 @@ class _HomePageState extends State<HomePage>
   }
 
   Future<void> initPlayer() async {
+    audioService = widget.audioService;
     //this is for reciting now only. in alarm it's handled by the alarm package
-    player.playerStateStream.listen((playerState) {
-      print("playerstate: ${playerState.processingState}");
-      if (playerState.processingState == ProcessingState.completed) {
-        setState(() {
-          isPlaying = false;
-        });
-      }
-    });
+    // player.playerStateStream.listen((playerState) {
+    //   print("playerstate: ${playerState.processingState}");
+    //   if (playerState.processingState == ProcessingState.completed) {
+    //     setState(() {
+    //       isPlaying = false;
+    //     });
+    //   }
+    // });
     await checkForAlarms();
   }
 
@@ -167,26 +171,26 @@ class _HomePageState extends State<HomePage>
       if (voiceType != VoiceType.custom) {
         // print(
         //     "${Constants.assetPath}ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
-        await player.setAsset(
+        await audioService.setAsset(
             "${Constants.assetPath}ashkenaz-$voice-${prayerParameters.returnToday.name}.mp3");
       } else {
         //print(Constants.customFilePath);
-        await player.setFilePath(Constants.customFilePath);
+        await audioService.setFile(Constants.customFilePath);
       }
       setState(() {
         isPlaying = true;
       });
       //print("loop mode: ${player.loopMode}");
-      player.seek(Duration.zero);
+      audioService.player.seek(Duration.zero);
 
-      player.play();
+      audioService.player.play();
     }
   }
 
   //stop reciting now. This is not connected to alarms
   void stop() {
     if (isPlaying) {
-      player.stop();
+      audioService.stop();
       setState(() {
         isPlaying = false;
       });
@@ -196,7 +200,7 @@ class _HomePageState extends State<HomePage>
   @override
   void dispose() {
     animationController.dispose();
-    player.dispose();
+    audioService.dispose();
     WidgetsBinding.instance.removeObserver(this);
     subscription.cancel();
     super.dispose();
@@ -295,22 +299,28 @@ class _HomePageState extends State<HomePage>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    //print("onpressed: ${appModel.getVoice()}");
-                    isPlaying ? stop() : readAloud(appModel.getVoice());
-                  },
-                  style: isPlaying
-                      ? ElevatedButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.secondary,
-                          foregroundColor:
-                              Theme.of(context).colorScheme.onSecondary)
-                      : ElevatedButton.styleFrom(),
-                  child: isPlaying
-                      ? Text(AppLocalizations.of(context)!.stop)
-                      : Text(AppLocalizations.of(context)!.play_now),
-                ),
+                StreamBuilder(
+                    stream: audioService.player.playerStateStream,
+                    builder: (context, asyncSnapshot) {
+                      final playerState = asyncSnapshot.data;
+                      final isPlaying = playerState?.playing ?? false;
+                      return ElevatedButton(
+                        onPressed: () {
+                          //print("onpressed: ${appModel.getVoice()}");
+                          isPlaying ? stop() : readAloud(appModel.getVoice());
+                        },
+                        style: isPlaying
+                            ? ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                foregroundColor:
+                                    Theme.of(context).colorScheme.onSecondary)
+                            : ElevatedButton.styleFrom(),
+                        child: isPlaying
+                            ? Text(AppLocalizations.of(context)!.stop)
+                            : Text(AppLocalizations.of(context)!.play_now),
+                      );
+                    }),
                 alarmExists
                     ? ElevatedButton(
                         onPressed: () async {
@@ -349,7 +359,9 @@ class _HomePageState extends State<HomePage>
                           PrayerParameters? parameters = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AlarmParametersPage(parameters: appModel.getPrayerParameters())));
+                                  builder: (context) => AlarmParametersPage(
+                                      parameters:
+                                          appModel.getPrayerParameters())));
                           startAnimation();
                           if (parameters == null) {
                             if (mounted) {
@@ -387,6 +399,7 @@ class _HomePageState extends State<HomePage>
                                 body: AppLocalizations.of(context)!
                                     .notification_body,
                                 stopButton: 'Stop',
+                                icon: 'notification_icon',
                                 // icon and iconColor optional
                               ),
                             );
